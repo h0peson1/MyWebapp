@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: "Premium SaaS",
@@ -15,23 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <nav className="navbar">
-          <div className="container">
-            <Link href="/" className="nav-brand">
-              <span className="text-accent">✦</span> StreamSaaS
-            </Link>
-            
-            <div className="nav-links">
-              <Link href="/" className="nav-item">Home</Link>
-              <Link href="/pricing" className="nav-item">Pricing</Link>
-            </div>
-
-            <div className="nav-actions">
-              <Link href="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Login</Link>
-              <Link href="/register" className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>Get Started</Link>
-            </div>
-          </div>
-        </nav>
+        <Navbar />
 
         <main className="main-content">
           {children}
