@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -61,15 +62,25 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="mobile-menu-content">
-          <Link href="/" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-          <Link href="/pricing" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
-          <hr className="mobile-divider" />
-          <Link href="/login" className="btn btn-secondary btn-full" style={{ padding: '1rem', justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-          <Link href="/register" className="btn btn-primary btn-full mt-2" style={{ padding: '1rem', justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
-        </div>
-      </div>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            className="mobile-menu"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <div className="mobile-menu-content">
+              <Link href="/" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+              <Link href="/pricing" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+              <hr className="mobile-divider" />
+              <Link href="/login" className="btn btn-secondary btn-full" style={{ padding: '1rem', justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+              <Link href="/register" className="btn btn-primary btn-full mt-2" style={{ padding: '1rem', justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
