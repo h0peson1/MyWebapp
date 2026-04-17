@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: "Premium SaaS",
@@ -33,6 +34,7 @@ export default function RootLayout({
             <p className="mt-4" style={{ fontSize: '0.85rem' }}>© 2026 StreamSaaS. All rights reserved.</p>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
