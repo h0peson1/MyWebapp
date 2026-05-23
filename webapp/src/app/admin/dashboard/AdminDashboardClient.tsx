@@ -2,8 +2,21 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Shield, ExternalLink, LogOut, Filter, CheckCircle, Clock, List } from 'lucide-react';
+import Link from 'next/link';
 
-export default function AdminDashboardClient({ initialSubscriptions }: { initialSubscriptions: any[] }) {
+type AdminSubscription = {
+  id: string;
+  productName: string;
+  plan: string;
+  startDate: string | Date;
+  accessDetails: string | null;
+  user?: {
+    email?: string | null;
+  } | null;
+};
+
+export default function AdminDashboardClient({ initialSubscriptions }: { initialSubscriptions: AdminSubscription[] }) {
   const router = useRouter();
   const [loadingIds, setLoadingIds] = useState<Record<string, boolean>>({});
   const [accessDetailsMap, setAccessDetailsMap] = useState<Record<string, string>>({});
@@ -35,8 +48,8 @@ export default function AdminDashboardClient({ initialSubscriptions }: { initial
       
       setAccessDetailsMap(prev => ({ ...prev, [subscriptionId]: '' }));
       router.refresh();
-    } catch (err: any) {
-      alert(`Error: ${err.message}`);
+    } catch (err: unknown) {
+      alert(`Error: ${err instanceof Error ? err.message : 'Failed to deliver'}`);
     } finally {
       setLoadingIds(prev => ({ ...prev, [subscriptionId]: false }));
     }
@@ -50,32 +63,153 @@ export default function AdminDashboardClient({ initialSubscriptions }: { initial
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      {/* Header Actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', gap: '1rem', background: 'var(--bg-card)', padding: '0.5rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
-          <button 
-            style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', background: filter === 'all' ? 'var(--accent)' : 'transparent', color: filter === 'all' ? '#fff' : 'var(--text-muted)', fontWeight: 600, transition: '0.2s' }}
-            onClick={() => setFilter('all')}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
+      {/* Admin Header */}
+      <header style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '0.9rem',
+        padding: '1rem 1.1rem',
+        background: 'var(--bg-card)',
+        borderRadius: '16px',
+        border: '1px solid var(--border)',
+        backdropFilter: 'blur(10px)',
+        marginBottom: '0.3rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flex: '1 1 240px', minWidth: 0 }}>
+          <div style={{ 
+            background: 'var(--accent)', 
+            padding: '0.6rem', 
+            borderRadius: '12px',
+            color: '#fff',
+            boxShadow: '0 4px 12px rgba(var(--accent-rgb), 0.3)'
+          }}>
+            <Shield size={24} />
+          </div>
+          <div>
+            <h1 style={{ fontSize: 'clamp(1rem, 4vw, 1.25rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>Admin Operations Center</h1>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>System Management & Delivery</p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'flex-end', flex: '1 1 260px' }}>
+          <Link 
+            href="/" 
+            target="_blank" 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              fontSize: '0.9rem', 
+              color: 'var(--text-muted)',
+              textDecoration: 'none',
+              fontWeight: 500,
+              whiteSpace: 'nowrap'
+            }}
           >
-            All Subscriptions
-          </button>
+            <ExternalLink size={16} /> View Website
+          </Link>
           <button 
-            style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', background: filter === 'pending' ? 'rgba(234, 179, 8, 0.2)' : 'transparent', color: filter === 'pending' ? '#eab308' : 'var(--text-muted)', fontWeight: 600, transition: '0.2s' }}
-            onClick={() => setFilter('pending')}
+            onClick={handleLogout} 
+            className="btn btn-secondary" 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              padding: '0.58rem 1rem',
+              borderRadius: '10px',
+              whiteSpace: 'nowrap'
+            }}
           >
-            Pending Delivery
-          </button>
-          <button 
-            style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', background: filter === 'delivered' ? 'rgba(34, 197, 94, 0.2)' : 'transparent', color: filter === 'delivered' ? '#22c55e' : 'var(--text-muted)', fontWeight: 600, transition: '0.2s' }}
-            onClick={() => setFilter('delivered')}
-          >
-            Delivered
+            <LogOut size={18} /> Secure Logout
           </button>
         </div>
-        <button className="btn btn-secondary" onClick={handleLogout}>
-          Secure Logout
-        </button>
+      </header>
+
+      {/* Filter Toolbar */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '0.75rem',
+        background: 'rgba(var(--text-main-rgb), 0.03)',
+        padding: '0.75rem 1rem',
+        borderRadius: '12px',
+        border: '1px solid var(--border)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          <Filter size={16} />
+          <span>Filter Status:</span>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', width: '100%' }}>
+          <button 
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: '1 1 112px',
+              gap: '0.4rem',
+              padding: '0.5rem 1rem', 
+              borderRadius: '8px', 
+              border: 'none', 
+              cursor: 'pointer', 
+              background: filter === 'all' ? 'var(--accent)' : 'transparent', 
+              color: filter === 'all' ? '#fff' : 'var(--text-muted)', 
+              fontWeight: 600, 
+              transition: '0.2s',
+              fontSize: '0.85rem'
+            }}
+            onClick={() => setFilter('all')}
+          >
+            <List size={14} /> All
+          </button>
+          <button 
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: '1 1 112px',
+              gap: '0.4rem',
+              padding: '0.5rem 1rem', 
+              borderRadius: '8px', 
+              border: 'none', 
+              cursor: 'pointer', 
+              background: filter === 'pending' ? 'rgba(234, 179, 8, 0.2)' : 'transparent', 
+              color: filter === 'pending' ? '#eab308' : 'var(--text-muted)', 
+              fontWeight: 600, 
+              transition: '0.2s',
+              fontSize: '0.85rem'
+            }}
+            onClick={() => setFilter('pending')}
+          >
+            <Clock size={14} /> Pending
+          </button>
+          <button 
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: '1 1 112px',
+              gap: '0.4rem',
+              padding: '0.5rem 1rem', 
+              borderRadius: '8px', 
+              border: 'none', 
+              cursor: 'pointer', 
+              background: filter === 'delivered' ? 'rgba(34, 197, 94, 0.2)' : 'transparent', 
+              color: filter === 'delivered' ? '#22c55e' : 'var(--text-muted)', 
+              fontWeight: 600, 
+              transition: '0.2s',
+              fontSize: '0.85rem'
+            }}
+            onClick={() => setFilter('delivered')}
+          >
+            <CheckCircle size={14} /> Delivered
+          </button>
+        </div>
       </div>
 
       {/* Subscriptions Grid */}
@@ -93,13 +227,14 @@ export default function AdminDashboardClient({ initialSubscriptions }: { initial
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: isDelivered ? '#22c55e' : '#eab308' }} />
                 
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem', gap: '0.6rem', flexWrap: 'wrap' }}>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>{sub.productName}</h3>
                     <span style={{ 
                       padding: '0.25rem 0.75rem', 
                       borderRadius: '99px', 
                       fontSize: '0.8rem', 
                       fontWeight: 600,
+                      whiteSpace: 'nowrap',
                       background: isDelivered ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
                       color: isDelivered ? '#22c55e' : '#eab308',
                       border: `1px solid ${isDelivered ? 'rgba(34, 197, 94, 0.2)' : 'rgba(234, 179, 8, 0.2)'}`

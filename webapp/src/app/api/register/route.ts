@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, signToken, validatePasswordStrength } from '@/lib/auth';
+import { sendMessage } from '@/lib/telegram';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
+    const { name, email, password, acceptedPolicies } = body;
 
     // Validate inputs
     if (!name || String(name).trim() === '') {
@@ -16,6 +17,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
+    if (acceptedPolicies !== true) {
+      return NextResponse.json({ error: 'You must accept the Terms and Privacy Policy to continue' }, { status: 400 });
+    }
+
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -23,6 +28,14 @@ export async function POST(req: Request) {
 
     if (existingUser) {
       return NextResponse.json({ error: 'User already exists' }, { status: 409 });
+    }
+
+    const passwordValidation = validatePasswordStrength(String(password));
+    if (!passwordValidation.valid) {
+      return NextResponse.json(
+        { error: passwordValidation.errors[0] },
+        { status: 400 }
+      );
     }
 
     // Hash password
@@ -37,10 +50,41 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(
+    // Notify Admin via Telegram
+    try {
+      const totalUsers = await prisma.user.count();
+      const adminId = process.env.TELEGRAM_CHAT_ID;
+      if (adminId) {
+        const message = `🆕 <b>New User Registered</b>\n\n` +
+          `Name: ${newUser.name}\n` +
+          `Email: ${newUser.email}\n` +
+          `Time: ${new Date().toISOString().split('T')[0]}\n\n` +
+          `Total Users: ${totalUsers}`;
+        
+        // Fire and forget (don't await to keep signup fast)
+        sendMessage(adminId, message).catch(err => console.error('Telegram Notify Error:', err));
+      }
+    } catch (notifyErr) {
+      console.error('Failed to send signup notification:', notifyErr);
+    }
+
+    const token = await signToken({ userId: newUser.id, email: newUser.email });
+    const response = NextResponse.json(
       { message: 'User registered successfully', user: { id: newUser.id, name: newUser.name, email: newUser.email } },
       { status: 201 }
     );
+
+    response.cookies.set({
+      name: 'token',
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24,
+      path: '/',
+    });
+
+    return response;
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

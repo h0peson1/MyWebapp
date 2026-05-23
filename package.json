@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npm --prefix webapp run dev",
+    "build": "npm --prefix webapp run build",
+    "start": "npm --prefix webapp run start",
+    "postinstall": "npm --prefix webapp install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

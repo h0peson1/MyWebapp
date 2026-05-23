@@ -1,10 +1,49 @@
 import type { Metadata } from "next";
+import { Manrope, Space_Grotesk } from 'next/font/google';
 import "./globals.css";
-import Link from 'next/link';
+import { AuthProvider } from '@/components/AuthContext';
+import { ThemeProvider } from '@/components/ThemeContext';
+import { Analytics } from "@vercel/analytics/react";
+import InteractiveBackground from '@/components/InteractiveBackground';
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+const displayFont = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['500', '700'],
+});
+
+const bodyFont = Manrope({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500', '700'],
+});
 
 export const metadata: Metadata = {
-  title: "Premium SaaS",
-  description: "Premium Subscriptions at Affordable Prices",
+  title: {
+    default: 'StreamSaaS',
+    template: '%s | StreamSaaS',
+  },
+  metadataBase: new URL(siteUrl),
+  description: 'StreamSaaS helps you buy premium subscriptions, upload payment proof, and manage access from one secure dashboard.',
+  keywords: ['saas', 'subscriptions', 'dashboard', 'account settings', 'streaming plans'],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'StreamSaaS',
+    description: 'Buy premium plans, upload proof, and manage subscriptions in one place.',
+    type: 'website',
+    url: siteUrl,
+    siteName: 'StreamSaaS',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'StreamSaaS',
+    description: 'Buy premium plans, upload proof, and manage subscriptions in one place.',
+    images: ['/twitter-image'],
+  },
 };
 
 export default function RootLayout({
@@ -13,41 +52,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <nav className="navbar">
-          <div className="container">
-            <Link href="/" className="nav-brand">
-              <span className="text-accent">✦</span> StreamSaaS
-            </Link>
-            
-            <div className="nav-links">
-              <Link href="/" className="nav-item">Home</Link>
-              <Link href="/pricing" className="nav-item">Pricing</Link>
-            </div>
-
-            <div className="nav-actions">
-              <Link href="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem' }}>Login</Link>
-              <Link href="/register" className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>Get Started</Link>
-            </div>
-          </div>
-        </nav>
-
-        <main className="main-content">
-          {children}
-        </main>
-
-        <footer className="footer">
-          <div className="container">
-            <h3>StreamSaaS Inc.</h3>
-            <div className="footer-links">
-              <Link href="/">Contact</Link>
-              <Link href="/">Terms</Link>
-              <Link href="/">Support</Link>
-            </div>
-            <p className="mt-4" style={{ fontSize: '0.85rem' }}>© 2026 StreamSaaS. All rights reserved.</p>
-          </div>
-        </footer>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${displayFont.variable} ${bodyFont.variable}`}>
+        <ThemeProvider>
+          <InteractiveBackground />
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

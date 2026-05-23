@@ -5,26 +5,15 @@ import { verifyToken } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const adminSecret = req.headers.get('x-admin-secret');
     const cookieStore = await cookies();
     const adminToken = cookieStore.get('adminToken')?.value;
 
-    let isAuthenticatedAdmin = false;
-
-    // Check header authentication
-    if (adminSecret && process.env.ADMIN_SECRET && adminSecret === process.env.ADMIN_SECRET) {
-      isAuthenticatedAdmin = true;
+    if (!adminToken) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid Admin Credentials' }, { status: 401 });
     }
 
-    // Check cookie authentication
-    if (!isAuthenticatedAdmin && adminToken) {
-      const payload = await verifyToken(adminToken);
-      if (payload && payload.role === 'admin') {
-        isAuthenticatedAdmin = true;
-      }
-    }
-
-    if (!isAuthenticatedAdmin) {
+    const payload = await verifyToken(adminToken);
+    if (!payload || payload.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized: Invalid Admin Credentials' }, { status: 401 });
     }
 

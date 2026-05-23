@@ -13,6 +13,7 @@ model User {
   password      String
   createdAt     DateTime       @default(now())
   subscriptions Subscription[]
+  payments      Payment[]
 }
 
 model Subscription {
@@ -25,4 +26,30 @@ model Subscription {
   startDate     DateTime @default(now())
   expiryDate    DateTime
   accessDetails String?
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  productId      String
+  amount         Int
+  paymentMethod  String   @default("momo")
+  transactionId  String?
+  proofImageUrl  String
+  status         String   @default("pending")
+  rejectionReason String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  action    String
+  details   String?
+  adminId   String   // Telegram ID of the admin
+  createdAt DateTime @default(now())
 }

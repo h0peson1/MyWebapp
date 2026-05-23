@@ -35,9 +35,11 @@ export async function POST(req: Request) {
 
     // Prevent crashing if developer didn't set keys yet
     const paystackSecret = process.env.PAYSTACK_SECRET_KEY;
-    if (!paystackSecret) {
-       console.error("PAYSTACK_SECRET_KEY is missing from environment variables.");
-       return NextResponse.json({ error: 'Payment gateway unconfigured' }, { status: 500 });
+    if (!paystackSecret || paystackSecret === "sk_test_placeholder") {
+       console.error("PAYSTACK_SECRET_KEY is missing or using placeholder.");
+       return NextResponse.json({ 
+         error: 'Payment gateway unconfigured. Please add your Paystack Secret Key to the .env file to enable checkouts.' 
+       }, { status: 400 });
     }
 
     // Call Paystack
