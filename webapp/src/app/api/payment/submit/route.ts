@@ -46,14 +46,14 @@ export async function POST(req: Request) {
       ? await prisma.payment.findFirst({
           where: {
             userId,
-            status: 'pending',
+            status: { in: ['Payment Submitted', 'Payment Verified', 'Processing'] },
           },
           select: { id: true },
         })
       : await prisma.$queryRaw<PaymentRecord[]>`
           SELECT "id"
           FROM "Payment"
-          WHERE "userId" = ${userId} AND "status" = 'pending'
+          WHERE "userId" = ${userId} AND "status" IN ('Payment Submitted', 'Payment Verified', 'Processing')
           LIMIT 1
         `.then((rows) => rows[0] ?? null);
 
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
           paymentMethod: 'momo',
           transactionId: transactionId || null,
           proofImageUrl,
-          status: 'pending',
+          status: 'Payment Submitted',
         },
       });
       paymentId = payment.id;
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
           'momo',
           ${transactionId || null},
           ${proofImageUrl},
-          'pending',
+          'Payment Submitted',
           ${new Date()}
         )
       `;

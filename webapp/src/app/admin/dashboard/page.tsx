@@ -28,17 +28,18 @@ export default async function AdminDashboardPage() {
     redirect('/admin');
   }
 
-  // Fetch subscriptions with user details
-  const subscriptions = await prisma.subscription.findMany({
+  // Fetch payments with user details
+  const payments = await prisma.payment.findMany({
     include: {
       user: {
         select: {
           email: true,
+          name: true,
         },
       },
     },
     orderBy: {
-      startDate: 'desc',
+      createdAt: 'desc',
     },
   });
 
@@ -54,7 +55,7 @@ export default async function AdminDashboardPage() {
           <Link href="/admin/payments" className="btn btn-secondary" style={{ width: '100%', maxWidth: '260px' }}>Review Payment Queue</Link>
         </div>
       </div>
-      <AdminDashboardClient initialSubscriptions={subscriptions} />
+      <AdminDashboardClient initialPayments={payments} />
     </div>
   );
 }

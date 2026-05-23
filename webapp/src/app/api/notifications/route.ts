@@ -35,6 +35,74 @@ export async function GET() {
 
     const notifications: NotificationItem[] = [];
 
+    // Fetch payments to construct dynamic status transition notification alerts
+    const payments = await prisma.payment.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+    });
+
+    for (const payment of payments) {
+      const orderShortId = payment.id.slice(0, 6).toUpperCase();
+      const timeStr = payment.updatedAt.toISOString();
+
+      if (payment.status === 'Payment Submitted') {
+        notifications.push({
+          id: `payment-submitted-${payment.id}`,
+          type: 'billing',
+          title: 'Payment Proof Submitted',
+          body: `Payment proof for Order SS-${orderShortId} is successfully submitted and pending verification.`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      } else if (payment.status === 'Payment Verified') {
+        notifications.push({
+          id: `payment-verified-${payment.id}`,
+          type: 'billing',
+          title: 'Payment Confirmed',
+          body: `Your payment for Order SS-${orderShortId} has been successfully verified!`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      } else if (payment.status === 'Processing') {
+        notifications.push({
+          id: `payment-processing-${payment.id}`,
+          type: 'onboarding',
+          title: 'Activation In Progress',
+          body: `We are currently setting up your subscription for Order SS-${orderShortId}.`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      } else if (payment.status === 'Delivered') {
+        notifications.push({
+          id: `payment-delivered-${payment.id}`,
+          type: 'onboarding',
+          title: 'Activation Complete',
+          body: `Your subscription for Order SS-${orderShortId} is active! Access details are available on your dashboard.`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      } else if (payment.status === 'Verification Required') {
+        notifications.push({
+          id: `payment-verification-required-${payment.id}`,
+          type: 'billing',
+          title: 'Verification Action Required',
+          body: `Order SS-${orderShortId} requires payment re-verification: ${payment.rejectionReason || 'Please check your screenshot or try again.'}`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      } else if (payment.status === 'rejected') {
+        notifications.push({
+          id: `payment-rejected-${payment.id}`,
+          type: 'billing',
+          title: 'Order Rejected',
+          body: `Your order SS-${orderShortId} has been rejected. Reason: ${payment.rejectionReason || 'No details provided.'}`,
+          href: '/dashboard',
+          createdAt: timeStr,
+        });
+      }
+    }
+
     notifications.push({
       id: 'security-tip',
       type: 'security',
@@ -44,7 +112,7 @@ export async function GET() {
       createdAt: new Date().toISOString(),
     });
 
-    if (subscriptions.length === 0) {
+    if (subscriptions.length === 0 && payments.length === 0) {
       notifications.push({
         id: 'onboarding-start',
         type: 'onboarding',
@@ -81,6 +149,9 @@ export async function GET() {
         });
       }
     }
+
+    // Sort notifications so that recent ones appear first
+    notifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ notifications: notifications.slice(0, 10) });
   } catch (error) {

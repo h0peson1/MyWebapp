@@ -4,6 +4,7 @@ import prisma from "@/lib/db";
 import { CreditCard, Calendar, ShieldCheck, Zap, AlertCircle, ExternalLink, Clock, Lock } from "lucide-react";
 import FadeUp from "@/components/motion/FadeUp";
 import { StaggerContainer, StaggerItem } from "@/components/motion/StaggerGroup";
+import AutoRefresh from "@/components/AutoRefresh";
 
 export const metadata = {
   title: 'Dashboard',
@@ -114,6 +115,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <AutoRefresh intervalMs={5000} />
       <FadeUp duration={0.6}>
         <section className="premium-panel" style={{ padding: '1.5rem' }}>
           <span className="section-kicker"><ShieldCheck size={14} /> Account Command Center</span>
@@ -168,26 +170,52 @@ export default async function DashboardPage() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {recentPayments.map((payment) => {
-                const displayStatus = payment.status === 'error' ? 'pending' : payment.status;
-                const statusColor =
-                  displayStatus === 'approved' ? '#16a34a' :
-                  displayStatus === 'rejected' ? '#ef4444' : '#d97706';
+                const orderShortId = payment.id.slice(0, 6).toUpperCase();
+                
+                let displayStatus = payment.status;
+                let statusColor = '#d97706'; // default orange/gold
+
+                if (payment.status === 'Payment Submitted') {
+                  displayStatus = 'Submitted (Pending)';
+                  statusColor = '#eab308';
+                } else if (payment.status === 'Payment Verified') {
+                  displayStatus = 'Payment Verified';
+                  statusColor = '#10b981';
+                } else if (payment.status === 'Processing') {
+                  displayStatus = 'Processing Activation';
+                  statusColor = '#3b82f6';
+                } else if (payment.status === 'Delivered') {
+                  displayStatus = 'Delivered & Active';
+                  statusColor = '#22c55e';
+                } else if (payment.status === 'Verification Required') {
+                  displayStatus = 'Action Required';
+                  statusColor = '#ef4444';
+                } else if (payment.status === 'rejected') {
+                  displayStatus = 'Rejected';
+                  statusColor = '#ef4444';
+                } else if (payment.status === 'pending') {
+                  displayStatus = 'Pending Verification';
+                  statusColor = '#d97706';
+                }
 
                 return (
                   <div key={payment.id} style={{ border: '1px solid var(--border)', borderRadius: '10px', padding: '0.75rem 0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem' }}>
                     <div>
-                      <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>{payment.productId}</p>
+                      <p style={{ fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        <span>{payment.productId}</span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem', fontWeight: 500 }}>(Order: SS-{orderShortId})</span>
+                      </p>
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                         Submitted {new Date(payment.createdAt).toLocaleDateString()}
                       </p>
-                      {displayStatus === 'rejected' && payment.rejectionReason && (
-                        <p style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                          Reason: {payment.rejectionReason}
+                      {['Verification Required', 'rejected'].includes(payment.status) && payment.rejectionReason && (
+                        <p style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '0.25rem', fontWeight: 600 }}>
+                          Details: {payment.rejectionReason}
                         </p>
                       )}
                     </div>
-                    <span style={{ color: statusColor, fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase' }}>
-                      {displayStatus === 'pending' ? 'pending review' : displayStatus}
+                    <span style={{ color: statusColor, fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                      {displayStatus}
                     </span>
                   </div>
                 );
