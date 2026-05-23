@@ -107,13 +107,13 @@ async function handleMessage(message: any) {
         where: { status: 'active', expiryDate: { gt: new Date() } }
       });
       const pendingPayments = await prisma.payment.count({
-        where: { status: 'pending' }
+        where: { status: 'Payment Submitted' }
       });
 
       const statsMsg = `📊 <b>System Statistics</b>\n\n` +
         `👥 Total Users: ${totalUsers}\n` +
         `✅ Active Subscriptions: ${activeSubs}\n` +
-        `⏳ Pending Payments: ${pendingPayments}`;
+        `⏳ Pending Verification: ${pendingPayments}`;
       
       await sendMessage(chatId, statsMsg);
       await logAdminAction('FETCH_STATS', 'Stats requested');
@@ -266,31 +266,18 @@ async function handleCallback(callbackQuery: any) {
     }
 
     if (action === 'approve') {
-      const resolvedProduct = resolveProductById(payment.productId);
-      if (!resolvedProduct) {
-         await editMessageCaption(chatId, messageId, "❌ Invalid product mapping.");
-         return NextResponse.json({ ok: true });
-      }
+      // Telegram approval verifies the payment, moving it to 'Payment Verified' stage.
+      // This complies with safety rules and leaves 'Dispatch & Deliver' (which takes accessDetails) to the web operations center.
+      await prisma.payment.update({
+        where: { id: paymentId },
+        data: { 
+          status: 'Payment Verified',
+          rejectionReason: null
+        }
+      });
 
-      const startDate = new Date();
-      const expiryDate = addDays(startDate, 30);
-
-      await prisma.$transaction([
-        prisma.payment.update({ where: { id: paymentId }, data: { status: 'approved' } }),
-        prisma.subscription.create({
-          data: {
-            userId: payment.userId,
-            productName: resolvedProduct.productName,
-            plan: resolvedProduct.plan,
-            status: 'active',
-            startDate,
-            expiryDate,
-          },
-        }),
-      ]);
-
-      await editMessageCaption(chatId, messageId, "✅ Payment Approved! Access activated.");
-      await logAdminAction('APPROVE_PAYMENT', `Approved: ${paymentId}`);
+      await editMessageCaption(chatId, messageId, "✅ Payment Verified via Telegram! Please log in to the web panel to dispatch credentials.");
+      await logAdminAction('VERIFY_PAYMENT_TELEGRAM', `Verified via Telegram: ${paymentId}`);
       return NextResponse.json({ ok: true });
     }
   } catch (err: any) {
