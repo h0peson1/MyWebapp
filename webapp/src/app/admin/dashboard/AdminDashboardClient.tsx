@@ -231,7 +231,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
         {/* Card 5: Revenue */}
         <div className="card" style={{ padding: '1.25rem', position: 'relative', borderLeft: '4px solid #a855f7' }}>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Revenue</div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.5rem', color: '#a855f7' }}>${totalRevenue.toFixed(2)}</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.5rem', color: '#a855f7' }}>GH₵{totalRevenue.toFixed(2)}</div>
         </div>
 
         {/* Card 6: Needs Action */}
@@ -465,7 +465,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                         </div>
                       </td>
                       <td style={{ padding: '1rem 0.75rem', fontWeight: 600 }}>
-                        ${(payment.amount / 100).toFixed(2)}
+                        GH₵{(payment.amount / 100).toFixed(2)}
                       </td>
                       <td style={{ padding: '1rem 0.75rem' }}>
                         <span style={{ 

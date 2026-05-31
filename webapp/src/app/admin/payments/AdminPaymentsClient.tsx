@@ -90,7 +90,7 @@ export default function AdminPaymentsClient({ initialPayments }: { initialPaymen
           <div>
             <p style={{ fontWeight: 700, wordBreak: 'break-word' }}>{payment.user.name} ({payment.user.email})</p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Product: {payment.productId}</p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Amount: {(payment.amount / 100).toFixed(2)}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Amount: GH₵{(payment.amount / 100).toFixed(2)}</p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Transaction ID: {payment.transactionId || 'N/A'}</p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
               Status: <strong>{displayStatus === 'pending' ? 'PENDING REVIEW' : displayStatus.toUpperCase()}</strong>
