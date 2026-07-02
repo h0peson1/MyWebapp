@@ -6,7 +6,7 @@ import { sendMessage } from '@/lib/telegram';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, password, acceptedPolicies } = body;
+    const { name, email, password, phone, acceptedPolicies } = body;
 
     // Validate inputs
     if (!name || String(name).trim() === '') {
@@ -15,6 +15,11 @@ export async function POST(req: Request) {
 
     if (!email || !password || String(email).trim() === '' || String(password).trim() === '') {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    }
+
+    const isGoogleSignup = password === 'GoogleSecurePassword123!';
+    if (!isGoogleSignup && (!phone || String(phone).trim() === '')) {
+      return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
     }
 
     if (acceptedPolicies !== true) {
@@ -46,6 +51,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
+        phone: phone ? String(phone).trim() : '',
         password: hashedPassword,
       },
     });
@@ -58,6 +64,7 @@ export async function POST(req: Request) {
         const message = `🆕 <b>New User Registered</b>\n\n` +
           `Name: ${newUser.name}\n` +
           `Email: ${newUser.email}\n` +
+          `Phone: ${newUser.phone || 'N/A'}\n` +
           `Time: ${new Date().toISOString().split('T')[0]}\n\n` +
           `Total Users: ${totalUsers}`;
         
@@ -70,7 +77,7 @@ export async function POST(req: Request) {
 
     const token = await signToken({ userId: newUser.id, email: newUser.email });
     const response = NextResponse.json(
-      { message: 'User registered successfully', user: { id: newUser.id, name: newUser.name, email: newUser.email } },
+      { message: 'User registered successfully', user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone } },
       { status: 201 }
     );
 

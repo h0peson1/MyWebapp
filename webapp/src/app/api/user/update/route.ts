@@ -11,16 +11,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name } = await req.json();
+    const { name, phone } = await req.json();
 
     if (!name || name.trim().length < 2) {
       return NextResponse.json({ error: "Name must be at least 2 characters" }, { status: 400 });
     }
 
+    if (!phone || phone.trim().length < 9) {
+      return NextResponse.json({ error: "Please enter a valid phone number (at least 9 digits)" }, { status: 400 });
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name: name.trim() },
-      select: { id: true, name: true, email: true }
+      data: { 
+        name: name.trim(),
+        phone: phone.trim()
+      },
+      select: { id: true, name: true, email: true, phone: true }
     });
 
     return NextResponse.json({ success: true, user: updatedUser });

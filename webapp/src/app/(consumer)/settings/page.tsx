@@ -22,7 +22,7 @@ export default async function SettingsPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { name: true, email: true }
+    select: { name: true, email: true, phone: true }
   });
 
   if (!user) {

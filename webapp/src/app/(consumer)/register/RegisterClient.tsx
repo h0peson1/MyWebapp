@@ -10,6 +10,7 @@ export default function RegisterClient() {
   const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [message, setMessage] = useState('');
@@ -52,7 +53,7 @@ export default function RegisterClient() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, acceptedPolicies: true }),
+        body: JSON.stringify({ name, email, password, phone, acceptedPolicies: true }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
@@ -154,6 +155,17 @@ export default function RegisterClient() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Phone Number</label>
+            <input
+              type="tel"
+              className="form-input"
+              placeholder="e.g. +233203728932"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>

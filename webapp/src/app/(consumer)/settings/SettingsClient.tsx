@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { User, Mail, Shield, Save, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { User, Mail, Shield, Save, CheckCircle, AlertCircle, Loader2, Phone } from "lucide-react";
 import FadeUp from "@/components/motion/FadeUp";
 import { useAuth } from "@/components/AuthContext";
 
@@ -9,12 +9,14 @@ interface SettingsClientProps {
   initialUser: {
     name: string;
     email: string;
+    phone: string;
   };
 }
 
 export default function SettingsClient({ initialUser }: SettingsClientProps) {
   const { checkAuth } = useAuth();
   const [name, setName] = useState(initialUser.name);
+  const [phone, setPhone] = useState(initialUser.phone || '');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState("");
   const [timezone, setTimezone] = useState(
@@ -30,7 +32,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim() === initialUser.name && status !== 'success') return; // No change
+    if (name.trim() === initialUser.name && phone.trim() === (initialUser.phone || '') && status !== 'success') return; // No change
 
     setStatus('loading');
     setMessage("");
@@ -39,7 +41,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
       const res = await fetch('/api/user/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, phone })
       });
 
       const data = await res.json();
@@ -117,6 +119,21 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Phone size={16} /> Phone Number
+            </label>
+            <input 
+              type="tel" 
+              className="form-input" 
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="e.g. +233203728932"
+              required
+              minLength={9}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Mail size={16} /> Email Address (Read-only)
             </label>
             <div style={{ padding: '0.8rem 1rem', background: 'rgba(59, 130, 246, 0.05)', border: '1px dashed var(--border)', borderRadius: '8px', color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -162,7 +179,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
             <button 
               type="submit" 
               className={`btn btn-primary ${status === 'loading' ? 'opacity-70 cursor-not-allowed' : ''}`}
-              disabled={status === 'loading' || name.trim() === initialUser.name}
+              disabled={status === 'loading' || (name.trim() === initialUser.name && phone.trim() === (initialUser.phone || ''))}
               style={{ width: '100%', padding: '1rem' }}
             >
               {status === 'loading' ? (
