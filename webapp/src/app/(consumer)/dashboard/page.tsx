@@ -311,9 +311,20 @@ export default async function DashboardPage() {
                              
                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.85rem' }}>
                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Receipt: {sub.id.substring(0, 12)}</span>
-                               <button style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                 <ExternalLink size={12} /> Help
-                               </button>
+                               {sub.productName.toLowerCase().includes('apple') || sub.productName.toLowerCase().includes('icloud') ? (
+                                 <a 
+                                   href={`https://wa.me/233203728932?text=${encodeURIComponent(`Hello StreamSaaS,\n\nI need help with my active ${sub.productName} (${sub.plan}) subscription.\n\nReceipt: ${sub.id.substring(0, 12)}`)}`}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   style={{ color: '#25D366', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', fontWeight: 700 }}
+                                 >
+                                   <ExternalLink size={12} /> WhatsApp Help
+                                 </a>
+                               ) : (
+                                 <button style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                   <ExternalLink size={12} /> Help
+                                 </button>
+                               )}
                              </div>
                            </div>
                          </details>
