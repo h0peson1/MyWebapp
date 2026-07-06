@@ -364,6 +364,29 @@ async function handleCallback(callbackQuery: any) {
     return NextResponse.json({ ok: true });
   }
 
+  // Handle prompt_dispatch callback query
+  if (data.startsWith('prompt_dispatch_')) {
+    const paymentId = data.replace('prompt_dispatch_', '');
+    await answerCallbackQuery(callbackQuery.id, 'Keyboard opening...');
+
+    try {
+      const text = `✍️ <b>Please reply to this message with the access details</b> for Order ID: <code>${paymentId}</code>\n\n(Write credentials/info below)`;
+      
+      await sendMessage(chatId, text, {
+        reply_markup: {
+          force_reply: true,
+          selective: true
+        }
+      });
+      
+      await logAdminAction('PROMPT_DISPATCH_TELEGRAM', `Prompted dispatch for: ${paymentId}`);
+    } catch (err: any) {
+      console.error('[telegram-webhook] Prompt Callback Error:', err.message);
+      await sendMessage(chatId, "❌ Failed to open input. Try replying manually.");
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   // Existing Approve/Reject logic
   const [action, ...rest] = data.split('_');
   const paymentId = rest.join('_');
@@ -421,12 +444,22 @@ async function handleCallback(callbackQuery: any) {
 
       const responseText = `✅ <b>Payment Verified!</b>\n` +
                            `Order ID: <code>${paymentId}</code>\n\n` +
-                           `To deliver the credentials directly, <b>reply to this message</b> with the access details.`;
+                           `Click the button below to dispatch the credentials directly via Telegram.`;
+
+      const options = {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "✉️ Dispatch Credentials", callback_data: `prompt_dispatch_${paymentId}` }
+            ]
+          ]
+        }
+      };
 
       if (isPhoto) {
-        await editMessageCaption(chatId, messageId, responseText);
+        await editMessageCaption(chatId, messageId, responseText, options);
       } else {
-        await editMessage(chatId, messageId, responseText);
+        await editMessage(chatId, messageId, responseText, options);
       }
 
       await logAdminAction('VERIFY_PAYMENT_TELEGRAM', `Verified via Telegram: ${paymentId}`);
