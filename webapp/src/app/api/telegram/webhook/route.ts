@@ -48,6 +48,60 @@ async function logAdminAction(action: string, details: string) {
   }
 }
 
+async function deliverOrderFromTelegram(paymentId: string, accessDetails: string) {
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentId },
+  });
+
+  if (!payment) {
+    return { success: false, error: 'Payment record not found.' };
+  }
+
+  if (payment.status === 'Delivered') {
+    return { success: false, error: 'Order has already been delivered.' };
+  }
+
+  const resolvedProduct = resolveProductById(payment.productId);
+  if (!resolvedProduct) {
+    return { success: false, error: 'Invalid product registered for this payment.' };
+  }
+
+  const startDate = new Date();
+  const expiryDate = addDays(startDate, 30);
+  const accessDetailsStr = accessDetails.trim();
+
+  await prisma.$transaction([
+    prisma.payment.update({
+      where: { id: paymentId },
+      data: {
+        status: 'Delivered',
+        accessDetails: accessDetailsStr,
+        rejectionReason: null,
+      },
+    }),
+    prisma.subscription.create({
+      data: {
+        userId: payment.userId,
+        productName: resolvedProduct.productName,
+        plan: resolvedProduct.plan,
+        status: 'active',
+        startDate,
+        expiryDate,
+        accessDetails: accessDetailsStr,
+      },
+    }),
+  ]);
+
+  await logAdminAction('DELIVER_PAYMENT_TELEGRAM', `Delivered via Telegram: ${paymentId}`);
+
+  return { 
+    success: true, 
+    productName: resolvedProduct.productName, 
+    plan: resolvedProduct.plan 
+  };
+}
+
+
 export async function POST(req: Request) {
   try {
     const payload = await req.json();
@@ -82,6 +136,83 @@ async function handleMessage(message: any) {
   const chatId = message.chat.id;
   const rawText = message.text || '';
   const text = rawText.trim();
+
+  // 1. Intercept replies to order verification messages
+  const replyTo = message.reply_to_message;
+  if (replyTo) {
+    const originalText = replyTo.text || replyTo.caption || '';
+    const match = originalText.match(/Order ID:\s*([a-f0-9\-]+)/i);
+    if (match) {
+      const paymentId = match[1];
+      const accessDetails = text;
+
+      if (!accessDetails) {
+        await sendMessage(chatId, "⚠️ Please provide the access details text in your reply.");
+        return NextResponse.json({ ok: true });
+      }
+
+      try {
+        const result = await deliverOrderFromTelegram(paymentId, accessDetails);
+        if (result.success) {
+          await sendMessage(chatId, `🎉 <b>Subscription Activated!</b>\n\n` +
+                                     `Order ID: <code>${paymentId}</code>\n` +
+                                     `Product: <b>${result.productName}</b> (${result.plan})\n` +
+                                     `Access Details:\n<code>${accessDetails}</code>\n\n` +
+                                     `Credentials successfully dispatched to user dashboard.`);
+        } else {
+          await sendMessage(chatId, `❌ <b>Delivery Failed:</b> ${result.error}`);
+        }
+      } catch (err: any) {
+        console.error('[telegram-webhook] Delivery exception:', err);
+        await sendMessage(chatId, `❌ <b>Delivery Error:</b> ${err.message}`);
+      }
+      return NextResponse.json({ ok: true });
+    }
+  }
+
+  // 2. Intercept direct deliver commands
+  if (text.startsWith('/deliver')) {
+    let paymentId = '';
+    let accessDetails = '';
+
+    if (text.startsWith('/deliver_')) {
+      const spaceIndex = text.indexOf(' ');
+      const commandPart = spaceIndex === -1 ? text : text.substring(0, spaceIndex);
+      paymentId = commandPart.replace('/deliver_', '').trim();
+      accessDetails = spaceIndex === -1 ? '' : text.substring(spaceIndex + 1).trim();
+    } else if (text.startsWith('/deliver ')) {
+      const parts = text.substring(9).trim().split(/\s+/);
+      paymentId = parts[0] || '';
+      accessDetails = text.substring(9 + paymentId.length).trim();
+    }
+
+    if (!paymentId) {
+      await sendMessage(chatId, "⚠️ Invalid command format. Use <code>/deliver &lt;paymentId&gt; &lt;details&gt;</code> or <code>/deliver_&lt;paymentId&gt; &lt;details&gt;</code>");
+      return NextResponse.json({ ok: true });
+    }
+
+    if (!accessDetails) {
+      await sendMessage(chatId, `⚠️ Please provide access details. Format: <code>/deliver_${paymentId} &lt;credentials&gt;</code>`);
+      return NextResponse.json({ ok: true });
+    }
+
+    try {
+      const result = await deliverOrderFromTelegram(paymentId, accessDetails);
+      if (result.success) {
+        await sendMessage(chatId, `🎉 <b>Subscription Activated!</b>\n\n` +
+                                   `Order ID: <code>${paymentId}</code>\n` +
+                                   `Product: <b>${result.productName}</b> (${result.plan})\n` +
+                                   `Access Details:\n<code>${accessDetails}</code>\n\n` +
+                                   `Credentials successfully dispatched to user dashboard.`);
+      } else {
+        await sendMessage(chatId, `❌ <b>Delivery Failed:</b> ${result.error}`);
+      }
+    } catch (err: any) {
+      console.error('[telegram-webhook] Direct delivery exception:', err);
+      await sendMessage(chatId, `❌ <b>Delivery Error:</b> ${err.message}`);
+    }
+    return NextResponse.json({ ok: true });
+  }
 
   // DASHBOARD / START
   if (text === '/start') {
@@ -249,9 +380,15 @@ async function handleCallback(callbackQuery: any) {
       ? await prisma.payment.findUnique({ where: { id: paymentId } })
       : null;
 
+    const isPhoto = !!callbackQuery.message?.photo;
+
     if (!payment) {
-       // Since it's a photo, use editMessageCaption if possible, but editMessage (Text) might fail
-       await editMessageCaption(chatId, messageId, "❌ Payment not found.");
+       const responseText = "❌ Payment not found.";
+       if (isPhoto) {
+         await editMessageCaption(chatId, messageId, responseText);
+       } else {
+         await editMessage(chatId, messageId, responseText);
+       }
        return NextResponse.json({ ok: true });
     }
 
@@ -260,14 +397,20 @@ async function handleCallback(callbackQuery: any) {
         where: { id: paymentId },
         data: { status: 'rejected', rejectionReason: 'Rejected via Telegram' },
       });
-      await editMessageCaption(chatId, messageId, "❌ Payment Rejected");
+
+      const responseText = `❌ <b>Payment Rejected</b>\nOrder ID: <code>${paymentId}</code>`;
+      if (isPhoto) {
+        await editMessageCaption(chatId, messageId, responseText);
+      } else {
+        await editMessage(chatId, messageId, responseText);
+      }
+
       await logAdminAction('REJECT_PAYMENT', `Rejected: ${paymentId}`);
       return NextResponse.json({ ok: true });
     }
 
     if (action === 'approve') {
       // Telegram approval verifies the payment, moving it to 'Payment Verified' stage.
-      // This complies with safety rules and leaves 'Dispatch & Deliver' (which takes accessDetails) to the web operations center.
       await prisma.payment.update({
         where: { id: paymentId },
         data: { 
@@ -276,7 +419,16 @@ async function handleCallback(callbackQuery: any) {
         }
       });
 
-      await editMessageCaption(chatId, messageId, "✅ Payment Verified via Telegram! Please log in to the web panel to dispatch credentials.");
+      const responseText = `✅ <b>Payment Verified!</b>\n` +
+                           `Order ID: <code>${paymentId}</code>\n\n` +
+                           `To deliver the credentials directly, <b>reply to this message</b> with the access details.`;
+
+      if (isPhoto) {
+        await editMessageCaption(chatId, messageId, responseText);
+      } else {
+        await editMessage(chatId, messageId, responseText);
+      }
+
       await logAdminAction('VERIFY_PAYMENT_TELEGRAM', `Verified via Telegram: ${paymentId}`);
       return NextResponse.json({ ok: true });
     }

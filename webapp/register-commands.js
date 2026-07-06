@@ -9,7 +9,8 @@ async function registerCommands() {
     { command: 'start', description: 'Open Admin Dashboard' },
     { command: 'stats', description: 'View System Statistics' },
     { command: 'users', description: 'List Recent Users' },
-    { command: 'remove', description: 'Remove a User (Requires email)' }
+    { command: 'remove', description: 'Remove a User (Requires email)' },
+    { command: 'deliver', description: 'Deliver order. Format: /deliver <order-uuid> <details>' }
   ];
 
   console.log('Registering commands with Telegram...');
