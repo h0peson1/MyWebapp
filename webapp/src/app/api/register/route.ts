@@ -17,8 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    const isGoogleSignup = password === 'GoogleSecurePassword123!';
-    if (!isGoogleSignup && (!phone || String(phone).trim() === '')) {
+    if (!phone || String(phone).trim() === '') {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
     }
 
