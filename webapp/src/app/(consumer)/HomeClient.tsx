@@ -58,7 +58,7 @@ export default function HomeClient() {
       <FadeUp duration={0.45}>
         <section className="premium-panel" style={{ padding: '1.25rem', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', right: '-90px', top: '-80px', width: '250px', height: '250px', borderRadius: '999px', background: 'var(--accent-soft)', filter: 'blur(10px)' }} />
-          <span className="section-kicker"><GoogleIcon name="sparkles" size={14} style={{ marginRight: '4px' }} /> Streamlined Subscription Control</span>
+          <span className="section-kicker"><GoogleIcon name="auto_awesome" size={14} style={{ marginRight: '4px' }} /> Streamlined Subscription Control</span>
           <h1 className="section-title" style={{ maxWidth: '860px' }}>
             Premium plans, clean delivery, and a dashboard that actually makes sense.
           </h1>
@@ -106,7 +106,7 @@ export default function HomeClient() {
             <GoogleIcon name="check_circle" size={18} style={{ color: '#10b981' }} /> Secure Payment
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
-            <GoogleIcon name="sparkles" size={18} className="text-accent" /> Fast Support
+            <GoogleIcon name="auto_awesome" size={18} className="text-accent" /> Fast Support
           </div>
         </div>
       </section>

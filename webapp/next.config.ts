@@ -29,8 +29,8 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            // Allows self, inline styles/scripts, Vercel Analytics, Cloudinary images, and Paystack connection endpoints
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://res.cloudinary.com https://*.cloudinary.com; font-src 'self' data:; connect-src 'self' https://va.vercel-scripts.com https://api.cloudinary.com https://api.paystack.co; frame-ancestors 'none';",
+            // Allows self, inline styles/scripts, Vercel Analytics, Cloudinary images, Paystack connection endpoints, and Google Fonts
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://res.cloudinary.com https://*.cloudinary.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://va.vercel-scripts.com https://api.cloudinary.com https://api.paystack.co; frame-ancestors 'none';",
           },
         ],
       },

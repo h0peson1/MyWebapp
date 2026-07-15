@@ -1,13 +1,15 @@
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
-const { Pool } = require('pg');
-const { PrismaPg } = require('@prisma/adapter-pg');
+const { neonConfig } = require('@neondatabase/serverless');
+const { PrismaNeon } = require('@prisma/adapter-neon');
+const ws = require('ws');
+
+neonConfig.webSocketConstructor = ws;
 
 async function check() {
   console.log("Checking DB connection...");
   const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({ connectionString });
-  const adapter = new PrismaPg(pool);
+  const adapter = new PrismaNeon({ connectionString });
   const prisma = new PrismaClient({ adapter });
   
   const users = await prisma.user.findMany({
