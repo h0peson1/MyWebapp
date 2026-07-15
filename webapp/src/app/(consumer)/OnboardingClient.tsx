@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheckCircle2, Circle, Rocket } from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 import { useAuth } from '@/components/AuthContext';
 import { trackEvent } from '@/lib/analytics';
 
@@ -54,7 +54,7 @@ export default function OnboardingClient() {
     <div className="container" style={{ paddingTop: '3rem', paddingBottom: '4rem', maxWidth: '860px' }}>
       <div className="card" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-          <Rocket size={28} /> Welcome Setup
+          <GoogleIcon name="rocket_launch" size={28} /> Welcome Setup
         </h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
           Complete these steps to unlock the full experience.
@@ -102,7 +102,7 @@ export default function OnboardingClient() {
                   textAlign: 'left',
                 }}
               >
-                {checked[step.id] ? <CheckCircle2 size={18} color="#10b981" /> : <Circle size={18} />}
+                {checked[step.id] ? <GoogleIcon name="check_circle" size={18} style={{ color: '#10b981' }} /> : <GoogleIcon name="circle" size={18} />}
                 {step.label}
               </button>
               {href && (

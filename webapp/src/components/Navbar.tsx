@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from './AuthContext';
-import { Sparkles, Menu, X, Settings, User, Sun, Moon } from 'lucide-react';
+import GoogleIcon from './icons/GoogleIcon';
 import { useTheme } from './ThemeContext';
 import NotificationBell from './NotificationBell';
 import { UserNav } from './nav/user-nav';
@@ -46,7 +46,7 @@ export default function Navbar() {
       <nav className="navbar">
         <div className="container">
           <Link href="/" className="nav-brand">
-            <span className="text-accent"><Sparkles size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} /></span> StreamSaaS
+            <span className="text-accent"><GoogleIcon name="sparkles" size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} /></span> StreamSaaS
           </Link>
           
           <div className="nav-links">
@@ -68,7 +68,7 @@ export default function Navbar() {
               style={{ padding: '0.5rem', borderRadius: '50%', width: '40px', height: '40px' }}
               aria-label="Toggle Theme"
             >
-              {!isClient ? <Sun size={20} /> : theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              {!isClient ? <GoogleIcon name="light_mode" size={20} /> : theme === 'light' ? <GoogleIcon name="dark_mode" size={20} /> : <GoogleIcon name="light_mode" size={20} />}
             </button>
             {!loading && (
               <>
@@ -92,7 +92,7 @@ export default function Navbar() {
             onClick={toggleMenu} 
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <GoogleIcon name="close" size={24} /> : <GoogleIcon name="menu" size={24} />}
           </button>
         </div>
       </nav>
@@ -119,7 +119,7 @@ export default function Navbar() {
                   aria-label="Toggle Theme"
                   style={{ padding: '0.6rem', borderRadius: '50%', width: '42px', height: '42px', marginLeft: isLoggedIn ? 'auto' : '0' }}
                 >
-                  {!isClient ? <Sun size={20} /> : theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                  {!isClient ? <GoogleIcon name="light_mode" size={20} /> : theme === 'light' ? <GoogleIcon name="dark_mode" size={20} /> : <GoogleIcon name="light_mode" size={20} />}
                 </button>
               </div>
               

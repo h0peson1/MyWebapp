@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { Bell, BellDot, CreditCard, Shield, Zap } from 'lucide-react';
+import GoogleIcon from './icons/GoogleIcon';
 
 type NotificationItem = {
   id: string;
@@ -76,7 +76,7 @@ export default function NotificationBell() {
         }}
         aria-label="Open notifications"
       >
-        {unreadCount > 0 ? <BellDot size={18} style={{ color: 'var(--accent)' }} /> : <Bell size={18} />}
+        {unreadCount > 0 ? <GoogleIcon name="notifications_active" size={18} style={{ color: 'var(--accent)' }} /> : <GoogleIcon name="notifications" size={18} />}
         {unreadCount > 0 && (
           <span
             style={{
@@ -141,20 +141,20 @@ export default function NotificationBell() {
           {!loading &&
             items.map((item) => {
               // Select category icons & theme colors
-              let typeIcon = <Bell size={14} />;
+              let typeIcon = <GoogleIcon name="notifications" size={14} />;
               let typeColor = 'var(--accent)';
               let typeBg = 'var(--accent-soft)';
 
               if (item.type === 'billing') {
-                typeIcon = <CreditCard size={14} />;
+                typeIcon = <GoogleIcon name="credit_card" size={14} />;
                 typeColor = '#eab308';
                 typeBg = 'rgba(234, 179, 8, 0.12)';
               } else if (item.type === 'security') {
-                typeIcon = <Shield size={14} />;
+                typeIcon = <GoogleIcon name="shield" size={14} />;
                 typeColor = '#a855f7';
                 typeBg = 'rgba(168, 85, 247, 0.12)';
               } else if (item.type === 'onboarding') {
-                typeIcon = <Zap size={14} />;
+                typeIcon = <GoogleIcon name="bolt" size={14} />;
                 typeColor = '#22c55e';
                 typeBg = 'rgba(34, 197, 94, 0.12)';
               }

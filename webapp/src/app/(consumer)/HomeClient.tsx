@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, LockKeyhole, Sparkles, TimerReset, Zap } from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 import FadeUp from '@/components/motion/FadeUp';
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerGroup';
 import { useAuth } from '@/components/AuthContext';
@@ -10,17 +10,17 @@ const highlights = [
   {
     title: 'Instant Access Delivery',
     body: 'Buy once and get private delivery details directly in your dashboard in minutes.',
-    icon: <Zap size={18} />,
+    icon: <GoogleIcon name="bolt" size={18} />,
   },
   {
     title: 'Secure Account Controls',
     body: 'Hardened login, password policies, and protected route checks by default.',
-    icon: <LockKeyhole size={18} />,
+    icon: <GoogleIcon name="lock" size={18} />,
   },
   {
     title: 'Simple Renewal Flow',
     body: 'Track active and expired subscriptions in one place and renew quickly.',
-    icon: <TimerReset size={18} />,
+    icon: <GoogleIcon name="timer" size={18} />,
   },
 ];
 
@@ -58,7 +58,7 @@ export default function HomeClient() {
       <FadeUp duration={0.45}>
         <section className="premium-panel" style={{ padding: '1.25rem', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', right: '-90px', top: '-80px', width: '250px', height: '250px', borderRadius: '999px', background: 'var(--accent-soft)', filter: 'blur(10px)' }} />
-          <span className="section-kicker"><Sparkles size={14} /> Streamlined Subscription Control</span>
+          <span className="section-kicker"><GoogleIcon name="sparkles" size={14} style={{ marginRight: '4px' }} /> Streamlined Subscription Control</span>
           <h1 className="section-title" style={{ maxWidth: '860px' }}>
             Premium plans, clean delivery, and a dashboard that actually makes sense.
           </h1>
@@ -67,7 +67,7 @@ export default function HomeClient() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
             <Link href="/pricing" className="btn btn-primary">
-              Explore Pricing <ArrowRight size={16} />
+              Explore Pricing <GoogleIcon name="arrow_forward" size={16} style={{ marginLeft: '4px' }} />
             </Link>
             <Link href="/dashboard" className="btn btn-secondary">Open Dashboard</Link>
           </div>
@@ -92,7 +92,7 @@ export default function HomeClient() {
         <section className="premium-panel" style={{ padding: '1.25rem', borderStyle: 'dashed' }}>
           <div className="grid-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', justifyItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
-            <Zap size={18} className="text-accent" /> Instant Delivery
+            <GoogleIcon name="bolt" size={18} className="text-accent" /> Instant Delivery
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
             <div style={{ display: 'flex', marginLeft: '4px' }}>
@@ -103,10 +103,10 @@ export default function HomeClient() {
             100+ Satisfied Users
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
-            <CheckCircle2 size={18} color="#10b981" /> Secure Payment
+            <GoogleIcon name="check_circle" size={18} style={{ color: '#10b981' }} /> Secure Payment
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
-            <Sparkles size={18} className="text-accent" /> Fast Support
+            <GoogleIcon name="sparkles" size={18} className="text-accent" /> Fast Support
           </div>
         </div>
       </section>
@@ -152,7 +152,7 @@ export default function HomeClient() {
           <ul className="feature-list" style={{ columns: 2 }}>
             {outcomes.map((point) => (
               <li key={point}>
-                <CheckCircle2 size={15} color="#10b981" /> {point}
+                <GoogleIcon name="check_circle" size={15} style={{ color: '#10b981' }} /> {point}
               </li>
             ))}
           </ul>

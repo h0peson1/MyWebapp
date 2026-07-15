@@ -2,22 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Shield, 
-  ExternalLink, 
-  LogOut, 
-  Filter, 
-  CheckCircle, 
-  Clock, 
-  List, 
-  FileText, 
-  AlertTriangle, 
-  Check, 
-  Play, 
-  Send, 
-  XCircle,
-  Eye
-} from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 import Link from 'next/link';
 import { formatAmount, resolveProductById } from '@/lib/products';
 
@@ -155,7 +140,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             color: '#fff',
             boxShadow: '0 4px 12px rgba(var(--accent-rgb), 0.3)'
           }}>
-            <Shield size={24} />
+            <GoogleIcon name="shield" size={24} />
           </div>
           <div>
             <h1 style={{ fontSize: 'clamp(1rem, 4vw, 1.25rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>Admin Operations Center</h1>
@@ -178,7 +163,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
               whiteSpace: 'nowrap'
             }}
           >
-            <ExternalLink size={16} /> View Website
+            <GoogleIcon name="open_in_new" size={16} /> View Website
           </Link>
           <button 
             onClick={handleLogout} 
@@ -192,7 +177,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
               whiteSpace: 'nowrap'
             }}
           >
-            <LogOut size={18} /> Secure Logout
+            <GoogleIcon name="logout" size={18} /> Secure Logout
           </button>
         </div>
       </header>
@@ -254,7 +239,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
         border: '1px solid var(--border)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.88rem', fontWeight: 600 }}>
-          <Filter size={16} />
+          <GoogleIcon name="filter_alt" size={16} />
           <span>Status Filters:</span>
         </div>
         
@@ -277,7 +262,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('all')}
           >
-            <List size={14} /> All
+            <GoogleIcon name="list" size={14} /> All
           </button>
           <button 
             style={{ 
@@ -297,7 +282,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('submitted')}
           >
-            <Clock size={14} /> Submitted
+            <GoogleIcon name="schedule" size={14} /> Submitted
           </button>
           <button 
             style={{ 
@@ -317,7 +302,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('verified')}
           >
-            <Check size={14} /> Verified
+            <GoogleIcon name="check" size={14} /> Verified
           </button>
           <button 
             style={{ 
@@ -337,7 +322,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('processing')}
           >
-            <Play size={14} /> Processing
+            <GoogleIcon name="play_arrow" size={14} /> Processing
           </button>
           <button 
             style={{ 
@@ -357,7 +342,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('delivered')}
           >
-            <CheckCircle size={14} /> Delivered
+            <GoogleIcon name="check_circle" size={14} /> Delivered
           </button>
           <button 
             style={{ 
@@ -377,7 +362,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
             }}
             onClick={() => setFilter('verification_required')}
           >
-            <AlertTriangle size={14} /> Verification Required
+            <GoogleIcon name="warning" size={14} /> Verification Required
           </button>
         </div>
       </div>
@@ -385,7 +370,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
       {/* Unified Orders List */}
       <div className="card" style={{ padding: '1.5rem', overflow: 'hidden' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FileText size={20} style={{ color: 'var(--accent)' }} /> Consolidated Orders Management
+          <GoogleIcon name="description" size={20} style={{ color: 'var(--accent)' }} /> Consolidated Orders Management
         </h2>
 
         <div style={{ overflowX: 'auto' }}>
@@ -508,7 +493,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                               e.currentTarget.style.color = 'var(--accent)';
                             }}
                           >
-                            <Eye size={12} /> View Proof
+                            <GoogleIcon name="visibility" size={12} /> View Proof
                           </button>
                         ) : (
                           <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>None</span>
@@ -536,7 +521,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                                 onClick={() => handleUpdateStatus(payment.id, 'verify')}
                                 disabled={loadingIds[payment.id]}
                               >
-                                <Check size={14} /> Verify Payment
+                                <GoogleIcon name="check" size={14} /> Verify Payment
                               </button>
                               
                               <div style={{ display: 'flex', gap: '0.3rem' }}>
@@ -581,7 +566,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                               onClick={() => handleUpdateStatus(payment.id, 'start_processing')}
                               disabled={loadingIds[payment.id]}
                             >
-                              <Play size={14} /> Start Processing
+                              <GoogleIcon name="play_arrow" size={14} /> Start Processing
                             </button>
                           )}
 
@@ -610,7 +595,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                                 onClick={() => handleUpdateStatus(payment.id, 'deliver')}
                                 disabled={loadingIds[payment.id]}
                               >
-                                <Send size={14} /> Dispatch & Deliver
+                                <GoogleIcon name="send" size={14} /> Dispatch & Deliver
                               </button>
                             </div>
                           )}
@@ -619,7 +604,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                           {payment.status === 'Delivered' && (
                             <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                               <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
-                                <CheckCircle size={14} /> Delivered & Active
+                                <GoogleIcon name="check_circle" size={14} /> Delivered & Active
                               </span>
                               {payment.accessDetails && (
                                 <div style={{ 
@@ -644,7 +629,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                           {payment.status === 'Verification Required' && (
                             <div style={{ textAlign: 'right', color: '#ef4444', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                               <span style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
-                                <AlertTriangle size={14} /> Awaiting Clarification
+                                <GoogleIcon name="warning" size={14} /> Awaiting Clarification
                               </span>
                               {payment.rejectionReason && (
                                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -658,7 +643,7 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                           {payment.status === 'rejected' && (
                             <div style={{ textAlign: 'right', color: '#e11d48', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                               <span style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem', justifyContent: 'flex-end' }}>
-                                <XCircle size={14} /> Rejected
+                                <GoogleIcon name="cancel" size={14} /> Rejected
                               </span>
                               {payment.rejectionReason && (
                                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>

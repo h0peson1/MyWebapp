@@ -147,24 +147,24 @@ async function handleMessage(message: any) {
       const accessDetails = text;
 
       if (!accessDetails) {
-        await sendMessage(chatId, "⚠️ Please provide the access details text in your reply.");
+        await sendMessage(chatId, "[WARNING] Please provide the access details text in your reply.");
         return NextResponse.json({ ok: true });
       }
 
       try {
         const result = await deliverOrderFromTelegram(paymentId, accessDetails);
         if (result.success) {
-          await sendMessage(chatId, `🎉 <b>Subscription Activated!</b>\n\n` +
+          await sendMessage(chatId, `[SUCCESS] <b>Subscription Activated!</b>\n\n` +
                                      `Order ID: <code>${paymentId}</code>\n` +
                                      `Product: <b>${result.productName}</b> (${result.plan})\n` +
                                      `Access Details:\n<code>${accessDetails}</code>\n\n` +
                                      `Credentials successfully dispatched to user dashboard.`);
         } else {
-          await sendMessage(chatId, `❌ <b>Delivery Failed:</b> ${result.error}`);
+          await sendMessage(chatId, `[FAILED] <b>Delivery Failed:</b> ${result.error}`);
         }
       } catch (err: any) {
         console.error('[telegram-webhook] Delivery exception:', err);
-        await sendMessage(chatId, `❌ <b>Delivery Error:</b> ${err.message}`);
+        await sendMessage(chatId, `[ERROR] <b>Delivery Error:</b> ${err.message}`);
       }
       return NextResponse.json({ ok: true });
     }
@@ -187,41 +187,41 @@ async function handleMessage(message: any) {
     }
 
     if (!paymentId) {
-      await sendMessage(chatId, "⚠️ Invalid command format. Use <code>/deliver &lt;paymentId&gt; &lt;details&gt;</code> or <code>/deliver_&lt;paymentId&gt; &lt;details&gt;</code>");
+      await sendMessage(chatId, "[WARNING] Invalid command format. Use <code>/deliver &lt;paymentId&gt; &lt;details&gt;</code> or <code>/deliver_&lt;paymentId&gt; &lt;details&gt;</code>");
       return NextResponse.json({ ok: true });
     }
 
     if (!accessDetails) {
-      await sendMessage(chatId, `⚠️ Please provide access details. Format: <code>/deliver_${paymentId} &lt;credentials&gt;</code>`);
+      await sendMessage(chatId, `[WARNING] Please provide access details. Format: <code>/deliver_${paymentId} &lt;credentials&gt;</code>`);
       return NextResponse.json({ ok: true });
     }
 
     try {
       const result = await deliverOrderFromTelegram(paymentId, accessDetails);
       if (result.success) {
-        await sendMessage(chatId, `🎉 <b>Subscription Activated!</b>\n\n` +
+        await sendMessage(chatId, `[SUCCESS] <b>Subscription Activated!</b>\n\n` +
                                    `Order ID: <code>${paymentId}</code>\n` +
                                    `Product: <b>${result.productName}</b> (${result.plan})\n` +
                                    `Access Details:\n<code>${accessDetails}</code>\n\n` +
                                    `Credentials successfully dispatched to user dashboard.`);
       } else {
-        await sendMessage(chatId, `❌ <b>Delivery Failed:</b> ${result.error}`);
+        await sendMessage(chatId, `[FAILED] <b>Delivery Failed:</b> ${result.error}`);
       }
     } catch (err: any) {
       console.error('[telegram-webhook] Direct delivery exception:', err);
-      await sendMessage(chatId, `❌ <b>Delivery Error:</b> ${err.message}`);
+      await sendMessage(chatId, `[ERROR] <b>Delivery Error:</b> ${err.message}`);
     }
     return NextResponse.json({ ok: true });
   }
 
   // DASHBOARD / START
   if (text === '/start') {
-    const welcomeMsg = `🚀 <b>Admin Dashboard</b>\n\nWelcome back, Administrator. Use the menu buttons below to manage your platform.`;
+    const welcomeMsg = `[DASHBOARD] <b>Admin Dashboard</b>\n\nWelcome back, Administrator. Use the menu buttons below to manage your platform.`;
     await sendMessage(chatId, welcomeMsg, {
       reply_markup: {
         keyboard: [
-          [{ text: "📊 Stats" }, { text: "👥 Users" }],
-          [{ text: "❌ Remove User" }]
+          [{ text: "Stats" }, { text: "Users" }],
+          [{ text: "Remove User" }]
         ],
         resize_keyboard: true,
         persistent: true
@@ -231,7 +231,7 @@ async function handleMessage(message: any) {
   }
 
   // STATISTICS
-  if (text === '/stats' || text === '📊 Stats') {
+  if (text === '/stats' || text === 'Stats') {
     try {
       const totalUsers = await prisma.user.count();
       const activeSubs = await prisma.subscription.count({
@@ -241,22 +241,22 @@ async function handleMessage(message: any) {
         where: { status: 'Payment Submitted' }
       });
 
-      const statsMsg = `📊 <b>System Statistics</b>\n\n` +
-        `👥 Total Users: ${totalUsers}\n` +
-        `✅ Active Subscriptions: ${activeSubs}\n` +
-        `⏳ Pending Verification: ${pendingPayments}`;
+      const statsMsg = `[STATS] <b>System Statistics</b>\n\n` +
+        `Total Users: ${totalUsers}\n` +
+        `Active Subscriptions: ${activeSubs}\n` +
+        `Pending Verification: ${pendingPayments}`;
       
       await sendMessage(chatId, statsMsg);
       await logAdminAction('FETCH_STATS', 'Stats requested');
     } catch (err: any) {
       console.error('[telegram-webhook] Stats Error:', err.message);
-      await sendMessage(chatId, "❌ Failed to fetch statistics. Check server logs.");
+      await sendMessage(chatId, "[ERROR] Failed to fetch statistics. Check server logs.");
     }
     return NextResponse.json({ ok: true });
   }
 
   // USER LIST
-  if (text === '/users' || text === '👥 Users') {
+  if (text === '/users' || text === 'Users') {
     try {
       const users = await prisma.user.findMany({
         take: 20,
@@ -264,7 +264,7 @@ async function handleMessage(message: any) {
         select: { email: true, name: true }
       });
 
-      let usersMsg = `👥 <b>Latest Users (Last 20)</b>\n\n`;
+      let usersMsg = `[USERS] <b>Latest Users (Last 20)</b>\n\n`;
       if (users.length === 0) usersMsg += "No users found.";
       else users.forEach((u, i) => { usersMsg += `${i + 1}. ${u.name} (${u.email})\n`; });
 
@@ -272,14 +272,14 @@ async function handleMessage(message: any) {
       await logAdminAction('FETCH_USERS', 'User list requested');
     } catch (err: any) {
       console.error('[telegram-webhook] Users Error:', err.message);
-      await sendMessage(chatId, "❌ Failed to fetch users.");
+      await sendMessage(chatId, "[ERROR] Failed to fetch users.");
     }
     return NextResponse.json({ ok: true });
   }
 
   // REMOVE USER HELP
-  if (text === '❌ Remove User') {
-    await sendMessage(chatId, "⚠️ To remove a user, please type:\n<code>/remove user@email.com</code>");
+  if (text === 'Remove User') {
+    await sendMessage(chatId, "[WARNING] To remove a user, please type:\n<code>/remove user@email.com</code>");
     return NextResponse.json({ ok: true });
   }
 
@@ -287,7 +287,7 @@ async function handleMessage(message: any) {
   if (text.startsWith('/remove ')) {
     const email = text.split(' ')[1]?.trim()?.toLowerCase();
     if (!email) {
-      await sendMessage(chatId, "⚠️ Usage: <code>/remove user@email.com</code>");
+      await sendMessage(chatId, "[WARNING] Usage: <code>/remove user@email.com</code>");
       return NextResponse.json({ ok: true });
     }
 
@@ -298,23 +298,23 @@ async function handleMessage(message: any) {
       });
 
       if (!user) {
-        await sendMessage(chatId, `❌ User with email <b>${email}</b> not found.`);
+        await sendMessage(chatId, `[ERROR] User with email <b>${email}</b> not found.`);
         return NextResponse.json({ ok: true });
       }
 
-      await sendMessage(chatId, `⚠️ <b>CONFIRMATION REQUIRED</b>\n\nAre you sure you want to remove user <b>${user.name}</b> (${user.email})?\n\nThis will also delete their subscriptions and payments.`, {
+      await sendMessage(chatId, `[WARNING] <b>CONFIRMATION REQUIRED</b>\n\nAre you sure you want to remove user <b>${user.name}</b> (${user.email})?\n\nThis will also delete their subscriptions and payments.`, {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "✅ Yes, Delete", callback_data: `confirm_remove_${user.id}` },
-              { text: "❌ Cancel", callback_data: `cancel_remove` }
+              { text: "Yes, Delete", callback_data: `confirm_remove_${user.id}` },
+              { text: "Cancel", callback_data: `cancel_remove` }
             ]
           ]
         }
       });
     } catch (err: any) {
       console.error('[telegram-webhook] Remove Command Error:', err.message);
-      await sendMessage(chatId, "❌ Error looking up user.");
+      await sendMessage(chatId, "[ERROR] Error looking up user.");
     }
     return NextResponse.json({ ok: true });
   }
@@ -335,7 +335,7 @@ async function handleCallback(callbackQuery: any) {
       
       if (!user) {
         await answerCallbackQuery(callbackQuery.id, 'User not found');
-        await editMessage(chatId, messageId, '❌ User already removed or missing.');
+        await editMessage(chatId, messageId, '[ERROR] User already removed or missing.');
         return NextResponse.json({ ok: true });
       }
 
@@ -347,12 +347,12 @@ async function handleCallback(callbackQuery: any) {
 
       await answerCallbackQuery(callbackQuery.id, 'User removed successfully');
       // For text messages, use editMessage (editMessageText)
-      await editMessage(chatId, messageId, `✅ User <b>${user.email}</b> has been permanently removed.`);
+      await editMessage(chatId, messageId, `[SUCCESS] User <b>${user.email}</b> has been permanently removed.`);
       await logAdminAction('REMOVE_USER', `Removed user: ${user.email}`);
     } catch (err: any) {
       console.error('[telegram-webhook] Callback Remove Error:', err.message);
       await answerCallbackQuery(callbackQuery.id, 'Critical deletion error');
-      await editMessage(chatId, messageId, "❌ Deletion failed. Check server logs.");
+      await editMessage(chatId, messageId, "[ERROR] Deletion failed. Check server logs.");
     }
     return NextResponse.json({ ok: true });
   }
@@ -370,7 +370,7 @@ async function handleCallback(callbackQuery: any) {
     await answerCallbackQuery(callbackQuery.id, 'Keyboard opening...');
 
     try {
-      const text = `✍️ <b>Please reply to this message with the access details</b> for Order ID: <code>${paymentId}</code>\n\n(Write credentials/info below)`;
+      const text = `[INPUT] <b>Please reply to this message with the access details</b> for Order ID: <code>${paymentId}</code>\n\n(Write credentials/info below)`;
       
       await sendMessage(chatId, text, {
         reply_markup: {
@@ -382,7 +382,7 @@ async function handleCallback(callbackQuery: any) {
       await logAdminAction('PROMPT_DISPATCH_TELEGRAM', `Prompted dispatch for: ${paymentId}`);
     } catch (err: any) {
       console.error('[telegram-webhook] Prompt Callback Error:', err.message);
-      await sendMessage(chatId, "❌ Failed to open input. Try replying manually.");
+      await sendMessage(chatId, "[ERROR] Failed to open input. Try replying manually.");
     }
     return NextResponse.json({ ok: true });
   }
@@ -406,7 +406,7 @@ async function handleCallback(callbackQuery: any) {
     const isPhoto = !!callbackQuery.message?.photo;
 
     if (!payment) {
-       const responseText = "❌ Payment not found.";
+      const responseText = "[ERROR] Payment not found.";
        if (isPhoto) {
          await editMessageCaption(chatId, messageId, responseText);
        } else {
@@ -421,7 +421,7 @@ async function handleCallback(callbackQuery: any) {
         data: { status: 'rejected', rejectionReason: 'Rejected via Telegram' },
       });
 
-      const responseText = `❌ <b>Payment Rejected</b>\nOrder ID: <code>${paymentId}</code>`;
+      const responseText = `[REJECTED] <b>Payment Rejected</b>\nOrder ID: <code>${paymentId}</code>`;
       if (isPhoto) {
         await editMessageCaption(chatId, messageId, responseText);
       } else {
@@ -442,7 +442,7 @@ async function handleCallback(callbackQuery: any) {
         }
       });
 
-      const responseText = `✅ <b>Payment Verified!</b>\n` +
+      const responseText = `[VERIFIED] <b>Payment Verified!</b>\n` +
                            `Order ID: <code>${paymentId}</code>\n\n` +
                            `Click the button below to dispatch the credentials directly via Telegram.`;
 
@@ -450,7 +450,7 @@ async function handleCallback(callbackQuery: any) {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "✉️ Dispatch Credentials", callback_data: `prompt_dispatch_${paymentId}` }
+              { text: "Dispatch Credentials", callback_data: `prompt_dispatch_${paymentId}` }
             ]
           ]
         }

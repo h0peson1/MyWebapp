@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import prisma from "@/lib/db";
-import { CreditCard, Calendar, ShieldCheck, Zap, AlertCircle, ExternalLink, Clock, Lock } from "lucide-react";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import FadeUp from "@/components/motion/FadeUp";
 import { StaggerContainer, StaggerItem } from "@/components/motion/StaggerGroup";
 import AutoRefresh from "@/components/AutoRefresh";
@@ -118,7 +118,7 @@ export default async function DashboardPage() {
       <AutoRefresh intervalMs={5000} />
       <FadeUp duration={0.6}>
         <section className="premium-panel" style={{ padding: '1.5rem' }}>
-          <span className="section-kicker"><ShieldCheck size={14} /> Account Command Center</span>
+          <span className="section-kicker"><GoogleIcon name="shield" size={14} /> Account Command Center</span>
           <h1 style={{ fontSize: '2.25rem', margin: '0.8rem 0 0.45rem' }}>Welcome back, {userName}</h1>
           <p style={{ color: 'var(--text-muted)' }}>Track every active plan, renewal, and delivery detail from one place.</p>
         </section>
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
           <article className="card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
               <div style={{ width: '40px', height: '40px', background: 'var(--accent-soft)', color: 'var(--accent)', borderRadius: '10px', display: 'grid', placeItems: 'center' }}>
-                <Zap size={24} />
+                <GoogleIcon name="bolt" size={24} />
               </div>
               <h3 style={{ fontSize: '1rem' }}>Active Plans</h3>
             </div>
@@ -140,7 +140,7 @@ export default async function DashboardPage() {
           <article className="card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
               <div style={{ width: '40px', height: '40px', background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', borderRadius: '10px', display: 'grid', placeItems: 'center' }}>
-                <Clock size={24} />
+                <GoogleIcon name="schedule" size={24} />
               </div>
               <h3 style={{ fontSize: '1rem' }}>Expired</h3>
             </div>
@@ -151,7 +151,7 @@ export default async function DashboardPage() {
           <article className="card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
               <div style={{ width: '40px', height: '40px', background: 'rgba(16, 185, 129, 0.12)', color: '#10b981', borderRadius: '10px', display: 'grid', placeItems: 'center' }}>
-                <ShieldCheck size={24} />
+                <GoogleIcon name="shield" size={24} />
               </div>
               <h3 style={{ fontSize: '1rem' }}>Account Status</h3>
             </div>
@@ -228,7 +228,7 @@ export default async function DashboardPage() {
       {subscriptions.length === 0 ? (
         <FadeUp delay={0.3}>
           <div className="premium-panel" style={{ maxWidth: '560px', margin: '1rem auto', textAlign: 'center', padding: '2rem 1.5rem' }}>
-            <AlertCircle size={48} style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', margin: '0 auto' }} />
+            <GoogleIcon name="error" size={48} style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', margin: '0 auto' }} />
             <p className="card-desc" style={{ fontSize: '1.2rem', marginBottom: '2.5rem', marginTop: '1.5rem' }}>You have no active subscriptions yet.</p>
             <Link href="/pricing" className="btn btn-primary" style={{ display: 'inline-flex', padding: '1rem 2rem' }}>Go to Pricing</Link>
           </div>
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
       ) : (
         <div>
           <h2 style={{ color: 'var(--text-muted)', fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.9rem' }}>
-            <CreditCard size={24} /> Your Subscriptions
+            <GoogleIcon name="credit_card" size={24} /> Your Subscriptions
           </h2>
           <StaggerContainer className="grid-2">
             {subscriptions.map(sub => {
@@ -262,7 +262,7 @@ export default async function DashboardPage() {
                            textTransform: 'uppercase',
                            letterSpacing: '0.05em'
                         }}>
-                          {isActive ? 'Active' : 'Expired'}
+                           {isActive ? 'Active' : 'Expired'}
                         </span>
                      </div>
                      
@@ -270,7 +270,7 @@ export default async function DashboardPage() {
                        <div>
                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Expiry Date</p>
                          <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600', color: 'var(--text-main)' }}>
-                           <Calendar size={16} /> {new Date(sub.expiryDate).toLocaleDateString()}
+                           <GoogleIcon name="calendar_today" size={16} /> {new Date(sub.expiryDate).toLocaleDateString()}
                          </p>
                        </div>
                        {isActive && (
@@ -287,12 +287,12 @@ export default async function DashboardPage() {
                        {isActive ? (
                          <details style={{ cursor: 'pointer' }}>
                            <summary className="btn btn-primary" style={{ display: 'flex', width: '100%', outline: 'none', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', listStyle: 'none' }}>
-                             <ShieldCheck size={18} /> Access Details
+                             <GoogleIcon name="shield" size={18} /> Access Details
                            </summary>
                            
                            <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '0.9rem' }}>
                              <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                               <Lock size={16} /> <strong>Private Access Provided:</strong>
+                               <GoogleIcon name="lock" size={16} /> <strong>Private Access Provided:</strong>
                              </p>
                              
                              <div style={{ 
@@ -305,7 +305,7 @@ export default async function DashboardPage() {
                                 fontSize: '0.84rem', 
                                 whiteSpace: 'pre-wrap',
                                 color: '#f4eee8'
-                              }}>
+                             }}>
                                {sub.accessDetails || 'Awaiting Account Delivery: An admin is assigning your slot shortly.'}
                              </div>
                              
@@ -318,11 +318,11 @@ export default async function DashboardPage() {
                                    rel="noopener noreferrer"
                                    style={{ color: '#25D366', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', fontWeight: 700 }}
                                  >
-                                   <ExternalLink size={12} /> WhatsApp Help
+                                   <GoogleIcon name="open_in_new" size={12} /> WhatsApp Help
                                  </a>
                                ) : (
                                  <button style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                   <ExternalLink size={12} /> Help
+                                   <GoogleIcon name="open_in_new" size={12} /> Help
                                  </button>
                                )}
                              </div>
@@ -343,7 +343,7 @@ export default async function DashboardPage() {
           </StaggerContainer>
           <FadeUp delay={0.5}>
             <div className="text-center" style={{ marginTop: '1.2rem' }}>
-               <Link href="/pricing" className="btn btn-secondary" style={{ padding: '0.9rem 1.8rem' }}>Browse More Plans &rarr;</Link>
+               <Link href="/pricing" className="btn btn-secondary" style={{ padding: '0.9rem 1.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>Browse More Plans <GoogleIcon name="arrow_forward" size={14} /></Link>
             </div>
           </FadeUp>
         </div>

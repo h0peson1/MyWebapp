@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Bell, BellDot } from 'lucide-react';
+import GoogleIcon from './icons/GoogleIcon';
 
 type AdminNotification = {
   id: string;
@@ -142,10 +142,10 @@ export default function AdminNotificationBell() {
       <button
         onClick={() => setOpen((value) => !value)}
         className="btn btn-secondary admin-notification-trigger"
-        style={{ padding: '0.45rem', borderRadius: '50%', width: '40px', height: '40px', position: 'relative' }}
+        style={{ padding: '0.45rem', borderRadius: '50%', width: '40px', height: '40px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         aria-label="Open admin notifications"
       >
-        {unreadCount > 0 ? <BellDot size={18} /> : <Bell size={18} />}
+        {unreadCount > 0 ? <GoogleIcon name="notifications_active" size={18} /> : <GoogleIcon name="notifications" size={18} />}
         {unreadCount > 0 && (
           <span className="admin-notification-badge" style={{ position: 'absolute', top: '-3px', right: '-3px', background: '#ef4444', color: '#fff', borderRadius: '999px', minWidth: '18px', height: '18px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.25rem' }}>
             {Math.min(unreadCount, 9)}

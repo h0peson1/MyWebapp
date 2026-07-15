@@ -6,6 +6,8 @@ import prisma from '@/lib/db';
 import AdminDashboardClient from './AdminDashboardClient';
 import AdminNotificationBell from '@/components/AdminNotificationBell';
 
+import GoogleIcon from '@/components/icons/GoogleIcon';
+
 export const metadata = {
   title: 'Admin Dashboard',
   description: 'Monitor users, subscriptions, and payment review activity in the StreamSaaS admin dashboard.',
@@ -47,7 +49,7 @@ export default async function AdminDashboardPage() {
     <div className="container" style={{ padding: '2rem 0', minHeight: '100vh' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1rem', flexWrap: 'wrap' }}>
         <h1 style={{ fontSize: 'clamp(1.35rem, 5vw, 2rem)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ color: 'var(--accent)' }}>✦</span> Admin Operations Center
+          <span style={{ color: 'var(--accent)' }}><GoogleIcon name="admin_panel_settings" size={24} /></span> Admin Operations Center
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <AdminNotificationBell />

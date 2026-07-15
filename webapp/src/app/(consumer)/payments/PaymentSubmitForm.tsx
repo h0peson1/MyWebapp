@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { parseProductId } from '@/lib/products';
-import { CheckCircle2, MessageSquare, ArrowRight, ShieldCheck, Copy, Check } from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 
 type Props = {
   productId: string;
@@ -113,7 +113,7 @@ export default function PaymentSubmitForm({ productId }: Props) {
         }}
       >
         <div style={{ color: '#10b981', display: 'grid', placeItems: 'center' }}>
-          <CheckCircle2 size={54} />
+          <GoogleIcon name="check_circle" size={54} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
@@ -146,7 +146,7 @@ export default function PaymentSubmitForm({ productId }: Props) {
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', padding: '0.2rem' }}
                 title="Copy Order ID"
               >
-                {copied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+                {copied ? <GoogleIcon name="check" size={14} style={{ color: '#10b981' }} /> : <GoogleIcon name="content_copy" size={14} />}
               </button>
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function PaymentSubmitForm({ productId }: Props) {
                 window.location.href = `https://wa.me/233203728932?text=${encodeURIComponent(waText)}`;
               }}
             >
-              <MessageSquare size={18} /> Open WhatsApp Now
+              <GoogleIcon name="chat" size={18} style={{ color: 'white' }} /> Open WhatsApp Now
             </button>
           </div>
         ) : (
@@ -221,7 +221,7 @@ export default function PaymentSubmitForm({ productId }: Props) {
               style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
               onClick={() => router.push('/dashboard')}
             >
-              <ShieldCheck size={18} /> Track Order <ArrowRight size={16} />
+              <GoogleIcon name="shield" size={18} /> Track Order <GoogleIcon name="arrow_forward" size={16} />
             </button>
           </div>
         )}

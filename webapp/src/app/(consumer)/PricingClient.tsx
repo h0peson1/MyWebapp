@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthContext';
-import { CheckCircle2, Cloud, ShieldCheck } from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 import FadeUp from '@/components/motion/FadeUp';
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerGroup';
 import { trackEvent } from '@/lib/analytics';
@@ -125,7 +125,7 @@ export default function PricingClient() {
           <ul className="feature-list" style={{ marginBottom: '0.4rem' }}>
             {plan.perks.map((perk) => (
               <li key={perk}>
-                <CheckCircle2 size={14} color="#16a34a" /> {perk}
+                <GoogleIcon name="check_circle" size={14} style={{ color: '#16a34a' }} /> {perk}
               </li>
             ))}
           </ul>
@@ -153,7 +153,7 @@ export default function PricingClient() {
       <FadeUp duration={0.4}>
         <section className="premium-panel" style={{ padding: '1.8rem', textAlign: 'center', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.7rem' }}>
-            <span className="section-kicker"><ShieldCheck size={14} /> Verified Plans</span>
+            <span className="section-kicker"><GoogleIcon name="shield" size={14} /> Verified Plans</span>
           </div>
           <h1 className="section-title" style={{ marginTop: '0.7rem' }}>Pricing built for speed and clarity</h1>
           <p className="section-subtitle" style={{ margin: '0 auto' }}>
@@ -169,7 +169,7 @@ export default function PricingClient() {
       <FadeUp delay={0.2} duration={0.5}>
         <section className="premium-panel" style={{ padding: '1.3rem' }}>
           <div style={{ marginBottom: '1rem' }}>
-            <span className="section-kicker"><Cloud size={14} /> iCloud Storage</span>
+            <span className="section-kicker"><GoogleIcon name="cloud" size={14} /> iCloud Storage</span>
             <h2 style={{ fontSize: '1.7rem', marginTop: '0.6rem' }}>Storage tiers for every workflow</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
               Choose your preferred iCloud capacity and keep all your devices in sync.

@@ -3,7 +3,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import Link from 'next/link';
 import { useAuth } from '../AuthContext';
-import { User, LayoutDashboard, Rocket, Settings, LogOut, ChevronDown } from 'lucide-react';
+import GoogleIcon from '../icons/GoogleIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
@@ -20,7 +20,7 @@ export function UserNav() {
       <DropdownMenu.Trigger asChild>
         <button className="user-nav-trigger" aria-label="User menu">
           <div className="user-avatar">
-            <User size={18} />
+            <GoogleIcon name="person" size={18} />
           </div>
           <span className="user-name">
             {user?.name?.split(' ')[0] || 'Account'}
@@ -29,7 +29,7 @@ export function UserNav() {
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <ChevronDown size={14} />
+            <GoogleIcon name="keyboard_arrow_down" size={14} />
           </motion.div>
         </button>
       </DropdownMenu.Trigger>
@@ -58,21 +58,21 @@ export function UserNav() {
 
                 <DropdownMenu.Item asChild>
                   <Link href="/dashboard" className="dropdown-item">
-                    <LayoutDashboard size={16} />
+                    <GoogleIcon name="dashboard" size={16} />
                     <span>Dashboard</span>
                   </Link>
                 </DropdownMenu.Item>
 
                 <DropdownMenu.Item asChild>
                   <Link href="/onboarding" className="dropdown-item">
-                    <Rocket size={16} />
+                    <GoogleIcon name="rocket_launch" size={16} />
                     <span>Onboarding</span>
                   </Link>
                 </DropdownMenu.Item>
 
                 <DropdownMenu.Item asChild>
                   <Link href="/settings" className="dropdown-item">
-                    <Settings size={16} />
+                    <GoogleIcon name="settings" size={16} />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenu.Item>
@@ -80,7 +80,7 @@ export function UserNav() {
                 <DropdownMenu.Separator className="dropdown-separator" />
 
                 <DropdownMenu.Item onSelect={handleLogout} className="dropdown-item logout">
-                  <LogOut size={16} />
+                  <GoogleIcon name="logout" size={16} />
                   <span>Log out</span>
                 </DropdownMenu.Item>
               </motion.div>

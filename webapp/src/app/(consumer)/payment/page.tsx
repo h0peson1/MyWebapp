@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { BadgeCheck, CircleDollarSign, ReceiptText, Smartphone, UploadCloud } from 'lucide-react';
+import GoogleIcon from '@/components/icons/GoogleIcon';
 import { formatAmount, resolveProductById } from '@/lib/products';
 import { MOMO_PAYMENT_CONFIG } from '@/lib/paymentConfig';
 import { verifyToken } from '@/lib/auth';
@@ -45,7 +45,7 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
   return (
     <div className="container" style={{ maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '3rem' }}>
       <section className="premium-panel" style={{ padding: '1.5rem', display: 'grid', gap: '0.55rem' }}>
-        <span className="section-kicker"><BadgeCheck size={14} /> Secure Manual Payment</span>
+        <span className="section-kicker"><GoogleIcon name="verified" size={14} /> Secure Manual Payment</span>
         <h1 style={{ fontSize: '1.95rem', lineHeight: 1.2 }}>Complete your subscription payment</h1>
         <p style={{ color: 'var(--text-muted)', maxWidth: '70ch' }}>
           Follow the payment instructions below, upload your proof, and we will verify your submission.
@@ -53,7 +53,7 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
       </section>
 
       <section className="card" style={{ gap: '0.9rem' }}>
-        <h2 className="card-title"><ReceiptText size={18} /> Plan Summary</h2>
+        <h2 className="card-title"><GoogleIcon name="receipt" size={18} /> Plan Summary</h2>
         <div className="grid-3" style={{ gap: '0.8rem' }}>
           <div className="stat-chip">
             <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Product</p>
@@ -71,7 +71,7 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
       </section>
 
       <section className="card" style={{ gap: '0.8rem' }}>
-        <h2 className="card-title"><Smartphone size={18} /> Payment Instructions</h2>
+        <h2 className="card-title"><GoogleIcon name="smartphone" size={18} /> Payment Instructions</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.93rem' }}>Send payment to:</p>
         <div className="grid-2" style={{ gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
           <div className="stat-chip">
@@ -94,7 +94,7 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
       </section>
 
       <section className="card" style={{ gap: '0.85rem' }}>
-        <h2 className="card-title"><UploadCloud size={18} /> Upload Proof</h2>
+        <h2 className="card-title"><GoogleIcon name="cloud_upload" size={18} /> Upload Proof</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.93rem' }}>
           Upload an image screenshot only. Transaction ID is optional.
         </p>
@@ -102,7 +102,7 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
       </section>
 
       <section className="card" style={{ gap: '0.75rem' }}>
-        <h2 className="card-title"><CircleDollarSign size={18} /> Submission Status</h2>
+        <h2 className="card-title"><GoogleIcon name="monetization_on" size={18} /> Submission Status</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
           After submission: <strong>Payment submitted successfully. Your access will be activated after verification.</strong>
         </p>

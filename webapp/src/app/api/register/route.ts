@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       const totalUsers = await prisma.user.count();
       const adminId = process.env.TELEGRAM_CHAT_ID;
       if (adminId) {
-        const message = `🆕 <b>New User Registered</b>\n\n` +
+        const message = `<b>[New User Registered]</b>\n\n` +
           `Name: ${newUser.name}\n` +
           `Email: ${newUser.email}\n` +
           `Phone: ${newUser.phone || 'N/A'}\n` +

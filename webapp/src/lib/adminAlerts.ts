@@ -140,7 +140,7 @@ async function sendAdminTelegramAlert(payload: NewOrderAlertPayload): Promise<Al
 
   const amount = formatAmount(payload.amount);
   
-  const text = `🚀 New Order Received!\n\n` +
+  const text = `[ORDER] New Order Received!\n\n` +
                `Product: ${payload.productName} (${payload.plan})\n` +
                `Amount: ${amount}\n` +
                `Customer: ${payload.userEmail || payload.userId}`;
@@ -166,8 +166,8 @@ async function sendAdminTelegramAlert(payload: NewOrderAlertPayload): Promise<Al
       requestBody.reply_markup = {
         inline_keyboard: [
           [
-            { text: '✅ Approve', callback_data: `approve_${payload.paymentId}` },
-            { text: '❌ Reject', callback_data: `reject_${payload.paymentId}` }
+            { text: 'Approve', callback_data: `approve_${payload.paymentId}` },
+            { text: 'Reject', callback_data: `reject_${payload.paymentId}` }
           ]
         ]
       };

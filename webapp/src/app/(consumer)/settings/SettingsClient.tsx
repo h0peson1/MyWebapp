@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { User, Mail, Shield, Save, CheckCircle, AlertCircle, Loader2, Phone } from "lucide-react";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import FadeUp from "@/components/motion/FadeUp";
 import { useAuth } from "@/components/AuthContext";
 
@@ -104,7 +104,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
         <form onSubmit={handleUpdate}>
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <User size={16} /> Display Name
+              <GoogleIcon name="person" size={16} /> Display Name
             </label>
             <input 
               type="text" 
@@ -119,7 +119,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Phone size={16} /> Phone Number
+              <GoogleIcon name="phone" size={16} /> Phone Number
             </label>
             <input 
               type="tel" 
@@ -134,7 +134,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Mail size={16} /> Email Address (Read-only)
+              <GoogleIcon name="mail" size={16} /> Email Address (Read-only)
             </label>
             <div style={{ padding: '0.8rem 1rem', background: 'rgba(59, 130, 246, 0.05)', border: '1px dashed var(--border)', borderRadius: '8px', color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {initialUser.email}
@@ -144,7 +144,7 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Shield size={16} /> Password Management
+              <GoogleIcon name="shield" size={16} /> Password Management
             </label>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Set your timezone and notification preferences below.</p>
           </div>
@@ -184,11 +184,11 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
             >
               {status === 'loading' ? (
                 <>
-                  <Loader2 size={18} className="animate-spin" /> Updating...
+                  <GoogleIcon name="sync" size={18} className="animate-spin" /> Updating...
                 </>
               ) : (
                 <>
-                  <Save size={18} /> Save Changes
+                  <GoogleIcon name="save" size={18} /> Save Changes
                 </>
               )}
             </button>
@@ -196,13 +196,13 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
 
           {status === 'success' && (
             <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CheckCircle size={18} /> {message}
+              <GoogleIcon name="check_circle" size={18} /> {message}
             </div>
           )}
 
           {status === 'error' && (
             <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <AlertCircle size={18} /> {message}
+              <GoogleIcon name="error" size={18} /> {message}
             </div>
           )}
         </form>

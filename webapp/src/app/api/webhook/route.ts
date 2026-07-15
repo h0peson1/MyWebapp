@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       if (product_name === "iCloud") {
         defaultAccess = `iCloud ${plan} Upgrade instructions:\n1. Ensure you are signed in on your device.\n2. Click the invite link once provided by our Admin.`;
       } else if (product_name === "Apple Music" || product_name === "DStv Premium" || product_name === "Apple TV+") {
-        defaultAccess = `Access Verification for ${product_name}:\nTo finalize your setup, tap below to join our private automated Telegram:\n\n👉 https://t.me/your_private_group`;
+        defaultAccess = `Access Verification for ${product_name}:\nTo finalize your setup, tap below to join our private automated Telegram:\n\nLink: https://t.me/your_private_group`;
       } else if (product_name === "Netflix" || product_name === "Snapchat+" || product_name === "Amazon Prime Video") {
         defaultAccess = `Your ${product_name} (${plan}) account credentials are being provisioned uniquely for you. Check back shortly!`;
       }

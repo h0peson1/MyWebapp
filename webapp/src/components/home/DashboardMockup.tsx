@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { User, CheckCircle2, Calendar } from 'lucide-react';
+import GoogleIcon from '../icons/GoogleIcon';
 
 export function DashboardMockup() {
   return (
@@ -15,7 +15,7 @@ export function DashboardMockup() {
         <div className="mockup-header">
           <div className="mockup-user">
             <div className="mockup-avatar">
-              <User size={14} />
+              <GoogleIcon name="person" size={14} />
             </div>
             <span>j***@gmail.com</span>
           </div>
@@ -27,14 +27,14 @@ export function DashboardMockup() {
 
         <div className="mockup-content">
           <div className="mockup-stat">
-            <Calendar size={14} className="text-muted" />
+            <GoogleIcon name="calendar_today" size={14} className="text-muted" />
             <div className="stat-info">
               <span className="stat-label">Expires in</span>
               <span className="stat-value">32 Days</span>
             </div>
           </div>
           <div className="mockup-stat">
-            <CheckCircle2 size={14} className="text-muted" />
+            <GoogleIcon name="check_circle" size={14} className="text-muted" />
             <div className="stat-info">
               <span className="stat-label">Status</span>
               <span className="stat-value">Premium Verified</span>
