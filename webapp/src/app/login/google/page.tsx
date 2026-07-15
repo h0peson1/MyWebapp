@@ -115,7 +115,7 @@ export default function GoogleSignInPage() {
             >
               {/* Account 1 */}
               <div
-                onClick={() => handleSelectAccount('Hw055', 'hw055277@gmail.com')}
+                onClick={() => handleSelectAccount('John Doe', 'john.doe@gmail.com')}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -140,17 +140,17 @@ export default function GoogleSignInPage() {
                     marginRight: '16px',
                   }}
                 >
-                  H
+                  J
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: '#e3e3e3' }}>Hw055</div>
-                  <div style={{ fontSize: '12px', color: '#c4c7c5' }}>hw055277@gmail.com</div>
+                  <div style={{ fontSize: '14px', fontWeight: 500, color: '#e3e3e3' }}>John Doe</div>
+                  <div style={{ fontSize: '12px', color: '#c4c7c5' }}>john.doe@gmail.com</div>
                 </div>
               </div>
 
               {/* Account 2 */}
               <div
-                onClick={() => handleSelectAccount('hopeson', 'hopeson@gmail.com')}
+                onClick={() => handleSelectAccount('Jane Smith', 'jane.smith@gmail.com')}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -175,11 +175,11 @@ export default function GoogleSignInPage() {
                     marginRight: '16px',
                   }}
                 >
-                  H
+                  J
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 500, color: '#e3e3e3' }}>hopeson</div>
-                  <div style={{ fontSize: '12px', color: '#c4c7c5' }}>hopeson@gmail.com</div>
+                  <div style={{ fontSize: '14px', fontWeight: 500, color: '#e3e3e3' }}>Jane Smith</div>
+                  <div style={{ fontSize: '12px', color: '#c4c7c5' }}>jane.smith@gmail.com</div>
                 </div>
               </div>
 
