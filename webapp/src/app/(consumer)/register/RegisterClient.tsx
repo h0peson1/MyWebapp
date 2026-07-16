@@ -4,10 +4,12 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
+import { useAuth } from '@/components/AuthContext';
 
 export default function RegisterClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { checkAuth } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -48,6 +50,8 @@ export default function RegisterClient() {
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
+
+      await checkAuth();
 
       const requestedNext = searchParams.get('next');
       const nextPath = requestedNext && requestedNext.startsWith('/') ? requestedNext : '/dashboard';

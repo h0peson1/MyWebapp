@@ -125,6 +125,13 @@ export default function Navbar() {
               
               <Link href="/" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
               <Link href="/pricing" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+              {isLoggedIn && (
+                <>
+                  <Link href="/dashboard" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link>
+                  <Link href="/onboarding" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Onboarding</Link>
+                  <Link href="/settings" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Settings</Link>
+                </>
+              )}
               {!isLoggedIn && (
                 <>
                   <Link href="/terms" className="nav-item" onClick={() => setIsMobileMenuOpen(false)}>Terms</Link>

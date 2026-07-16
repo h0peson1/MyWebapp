@@ -23,6 +23,7 @@ export default async function authProxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/api/payment/submit') ||
     request.nextUrl.pathname.startsWith('/api/notifications') ||
     request.nextUrl.pathname.startsWith('/api/user/update') ||
+    request.nextUrl.pathname.startsWith('/api/user/delete') ||
     request.nextUrl.pathname.startsWith('/api/user/change-password');
 
   const isAdminRoute =
@@ -101,6 +102,7 @@ export const config = {
     '/api/notifications',
     '/api/pay',
     '/api/user/update',
+    '/api/user/delete',
     '/api/user/change-password',
     '/admin/dashboard/:path*',
     '/admin/payments/:path*',

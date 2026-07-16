@@ -14,7 +14,7 @@ interface SettingsClientProps {
 }
 
 export default function SettingsClient({ initialUser }: SettingsClientProps) {
-  const { checkAuth } = useAuth();
+  const { checkAuth, logout } = useAuth();
   const [name, setName] = useState(initialUser.name);
   const [phone, setPhone] = useState(initialUser.phone || '');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -29,6 +29,11 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
   const [newPassword, setNewPassword] = useState('');
   const [passwordStatus, setPasswordStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [passwordMessage, setPasswordMessage] = useState('');
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmDeleteText, setConfirmDeleteText] = useState("");
+  const [deleteStatus, setDeleteStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +98,32 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
     } catch (err: unknown) {
       setPasswordStatus('error');
       setPasswordMessage(err instanceof Error ? err.message : 'Failed to change password');
+    }
+  };
+
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (confirmDeleteText.trim().toUpperCase() !== 'DELETE') return;
+
+    setDeleteStatus('loading');
+    setDeleteMessage('');
+
+    try {
+      const res = await fetch('/api/user/delete', {
+        method: 'POST',
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to delete account');
+      }
+
+      setDeleteStatus('idle');
+      setShowDeleteModal(false);
+      await logout();
+    } catch (err: unknown) {
+      setDeleteStatus('error');
+      setDeleteMessage(err instanceof Error ? err.message : 'An error occurred while deleting your account.');
     }
   };
 
@@ -243,7 +274,89 @@ export default function SettingsClient({ initialUser }: SettingsClientProps) {
             <p style={{ color: '#ef4444', marginTop: '0.8rem', fontSize: '0.85rem' }}>{passwordMessage}</p>
           )}
         </form>
+
+        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
+          <h4 style={{ color: '#ef4444', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <GoogleIcon name="warning" size={18} /> Danger Zone
+          </h4>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+            Permanently delete your account and all associated subscriptions and payment records. This action cannot be undone.
+          </p>
+          <button 
+            type="button" 
+            className="btn btn-danger" 
+            onClick={() => {
+              setShowDeleteModal(true);
+              setConfirmDeleteText("");
+              setDeleteMessage("");
+              setDeleteStatus("idle");
+            }}
+          >
+            <GoogleIcon name="delete" size={16} /> Delete Account
+          </button>
+        </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: '1.5rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <GoogleIcon name="warning" size={24} /> Delete Account?
+            </h3>
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: '1.5' }}>
+              Are you absolutely sure you want to delete your account? This action is <strong>permanent</strong> and will delete:
+            </p>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '1.25rem', fontSize: '0.88rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <li>Your profile details (Name, Phone, Email)</li>
+              <li>All active and historical subscriptions</li>
+              <li>All payment receipts and transaction records</li>
+            </ul>
+            
+            <form onSubmit={handleDeleteAccount} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                  To confirm, type <span style={{ color: '#ef4444', fontWeight: 700 }}>DELETE</span> below:
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Type DELETE"
+                  value={confirmDeleteText}
+                  onChange={(e) => setConfirmDeleteText(e.target.value)}
+                  required
+                  style={{ borderColor: confirmDeleteText.trim().toUpperCase() === 'DELETE' ? '#ef4444' : 'var(--border)' }}
+                />
+              </div>
+
+              {deleteStatus === 'error' && (
+                <div style={{ padding: '0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', fontSize: '0.85rem' }}>
+                  {deleteMessage}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowDeleteModal(false)}
+                  style={{ flex: 1, padding: '0.8rem' }}
+                  disabled={deleteStatus === 'loading'}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-danger"
+                  style={{ flex: 1, padding: '0.8rem' }}
+                  disabled={confirmDeleteText.trim().toUpperCase() !== 'DELETE' || deleteStatus === 'loading'}
+                >
+                  {deleteStatus === 'loading' ? 'Deleting...' : 'Confirm Delete'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </FadeUp>
   );
 }

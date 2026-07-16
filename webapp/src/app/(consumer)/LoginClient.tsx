@@ -3,10 +3,12 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/AuthContext';
 import { trackEvent } from '@/lib/analytics';
 
 export default function LoginClient() {
   const router = useRouter();
+  const { checkAuth } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -31,7 +33,8 @@ export default function LoginClient() {
       void trackEvent('login_success', { email });
 
       setMessage('Login successful! Redirecting...');
-      window.location.assign('/dashboard');
+      await checkAuth();
+      router.push('/dashboard');
     } catch (err: unknown) {
       setMessage(err instanceof Error ? err.message : 'Login failed');
     } finally {
