@@ -7,9 +7,11 @@ import GoogleIcon from '@/components/icons/GoogleIcon';
 
 type Props = {
   productId: string;
+  subscriptionMonths: number;
+  totalAmount: number;
 };
 
-export default function PaymentSubmitForm({ productId }: Props) {
+export default function PaymentSubmitForm({ productId, subscriptionMonths, totalAmount }: Props) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [transactionId, setTransactionId] = useState('');
@@ -23,7 +25,9 @@ export default function PaymentSubmitForm({ productId }: Props) {
   const parsed = parseProductId(productId);
   const productName = parsed?.productName || 'Subscription';
   const plan = parsed?.plan || '';
-  const packageName = plan ? `${productName} ${plan}` : productName;
+  const packageName = plan 
+    ? `${productName} ${plan} (${subscriptionMonths} Month${subscriptionMonths > 1 ? 's' : ''})` 
+    : `${productName} (${subscriptionMonths} Month${subscriptionMonths > 1 ? 's' : ''})`;
 
   // Determine if it is an Apple ecosystem product (Apple Music, Apple TV+, iCloud)
   const isAppleProduct = 
@@ -69,6 +73,7 @@ export default function PaymentSubmitForm({ productId }: Props) {
     formData.append('productId', productId);
     formData.append('proof', file);
     formData.append('transactionId', transactionId.trim());
+    formData.append('subscriptionMonths', String(subscriptionMonths));
 
     setStatus('loading');
     setMessage('Submitting payment...');

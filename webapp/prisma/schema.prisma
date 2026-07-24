@@ -30,19 +30,21 @@ model Subscription {
 }
 
 model Payment {
-  id             String   @id @default(uuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  productId      String
-  amount         Int
-  paymentMethod  String   @default("momo")
-  transactionId  String?
-  proofImageUrl  String
-  status         String   @default("pending")
-  rejectionReason String?
-  accessDetails  String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  productId          String
+  amount             Int
+  subscriptionMonths Int      @default(1)
+  monthlyPrice       Int      @default(0)
+  paymentMethod      String   @default("momo")
+  transactionId      String?
+  proofImageUrl      String
+  status             String   @default("pending")
+  rejectionReason    String?
+  accessDetails      String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@index([userId, status])
   @@index([status, createdAt])

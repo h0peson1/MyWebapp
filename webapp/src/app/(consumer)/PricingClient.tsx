@@ -1,12 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthContext';
 import GoogleIcon from '@/components/icons/GoogleIcon';
 import FadeUp from '@/components/motion/FadeUp';
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerGroup';
 import { trackEvent } from '@/lib/analytics';
-import { createProductId } from '@/lib/products';
+import { createProductId, getProductPrice } from '@/lib/products';
 
 type Plan = {
   product: string;
@@ -90,16 +91,22 @@ const icloudPlans: Plan[] = [
 
 export default function PricingClient() {
   const { isLoggedIn, loading } = useAuth();
+  const [planMonths, setPlanMonths] = useState<Record<string, number>>({});
 
-  const getSubscribeHref = (productName: string, plan: string) => {
+  const getSubscribeHref = (productName: string, plan: string, months: number) => {
     const productId = createProductId(productName, plan);
-    const paymentHref = `/payment?productId=${encodeURIComponent(productId)}`;
+    const paymentHref = `/payment?productId=${encodeURIComponent(productId)}&months=${months}`;
     return isLoggedIn ? paymentHref : `/register?next=${encodeURIComponent(paymentHref)}`;
   };
 
   const renderPlan = (plan: Plan) => {
     const id = `${plan.product}-${plan.plan}`;
-    const href = getSubscribeHref(plan.product, plan.plan);
+    const months = planMonths[id] || 1;
+    const href = getSubscribeHref(plan.product, plan.plan, months);
+    const basePriceMinor = getProductPrice(plan.product, plan.plan) || 0;
+    const monthlyPriceFormatted = `₵${(basePriceMinor / 100).toFixed(0)}`;
+    const totalPriceMinor = basePriceMinor * months;
+    const totalPriceFormatted = `₵${(totalPriceMinor / 100).toFixed(0)}`;
 
     return (
       <StaggerItem key={id}>
@@ -120,7 +127,43 @@ export default function PricingClient() {
             )}
           </div>
 
-          <p className="card-price">{plan.price}<span>/month</span></p>
+          <p className="card-price" style={{ marginBottom: '0.2rem' }}>{monthlyPriceFormatted}<span>/month</span></p>
+          
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.6rem' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Duration:</span>
+            <select
+              className="form-input"
+              value={months}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setPlanMonths((prev) => ({ ...prev, [id]: val }));
+              }}
+              style={{
+                margin: 0,
+                padding: '0.35rem 0.65rem',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                width: 'auto',
+                borderRadius: '8px',
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-main)',
+              }}
+            >
+              {[1, 3, 6, 12].map((opt) => (
+                <option key={opt} value={opt} style={{ backgroundColor: 'var(--bg-elevated)', color: 'var(--text-main)' }}>
+                  {opt} Month{opt > 1 ? 's' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {months > 1 && (
+            <p style={{ fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 700, marginTop: '-0.3rem', marginBottom: '0.6rem' }}>
+              Total for {months} Months: {totalPriceFormatted}
+            </p>
+          )}
 
           <ul className="feature-list" style={{ marginBottom: '0.4rem' }}>
             {plan.perks.map((perk) => (

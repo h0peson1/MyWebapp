@@ -21,6 +21,8 @@ function hasPaymentDelegate(client: typeof prisma): client is typeof prisma & {
         userId: string;
         productId: string;
         amount: number;
+        subscriptionMonths: number;
+        monthlyPrice: number;
         paymentMethod: string;
         transactionId: string | null;
         proofImageUrl: string;
@@ -68,6 +70,7 @@ export async function POST(req: Request) {
     const productId = String(formData.get('productId') || '');
     const transactionIdRaw = formData.get('transactionId');
     const proof = formData.get('proof');
+    const subscriptionMonthsRaw = formData.get('subscriptionMonths');
 
     if (!productId) {
       return NextResponse.json({ error: 'Product is required' }, { status: 400 });
@@ -76,6 +79,11 @@ export async function POST(req: Request) {
     const resolvedProduct = resolveProductById(productId);
     if (!resolvedProduct) {
       return NextResponse.json({ error: 'Invalid product selection' }, { status: 400 });
+    }
+
+    const subscriptionMonths = subscriptionMonthsRaw ? parseInt(String(subscriptionMonthsRaw), 10) : 1;
+    if (isNaN(subscriptionMonths) || subscriptionMonths < 1 || subscriptionMonths > 12) {
+      return NextResponse.json({ error: 'Subscription duration must be between 1 and 12 months.' }, { status: 400 });
     }
 
     if (!(proof instanceof File)) {
@@ -98,6 +106,8 @@ export async function POST(req: Request) {
     });
 
     const transactionId = typeof transactionIdRaw === 'string' ? transactionIdRaw.trim() : null;
+    const totalAmount = resolvedProduct.amount * subscriptionMonths;
+    const monthlyPrice = resolvedProduct.amount;
 
     let paymentId: string;
     if (hasPaymentDelegate(prisma)) {
@@ -105,13 +115,15 @@ export async function POST(req: Request) {
         data: {
           userId,
           productId,
-          amount: resolvedProduct.amount,
+          amount: totalAmount,
+          subscriptionMonths,
+          monthlyPrice,
           paymentMethod: 'momo',
           transactionId: transactionId || null,
           proofImageUrl,
           status: 'Payment Submitted',
         },
-      });
+      }) as { id: string };
       paymentId = payment.id;
     } else {
       paymentId = randomUUID();
@@ -121,6 +133,8 @@ export async function POST(req: Request) {
           "userId",
           "productId",
           "amount",
+          "subscriptionMonths",
+          "monthlyPrice",
           "paymentMethod",
           "transactionId",
           "proofImageUrl",
@@ -130,7 +144,9 @@ export async function POST(req: Request) {
           ${paymentId},
           ${userId},
           ${productId},
-          ${resolvedProduct.amount},
+          ${totalAmount},
+          ${subscriptionMonths},
+          ${monthlyPrice},
           'momo',
           ${transactionId || null},
           ${proofImageUrl},
@@ -148,7 +164,8 @@ export async function POST(req: Request) {
       productId,
       productName: resolvedProduct.productName,
       plan: resolvedProduct.plan,
-      amount: resolvedProduct.amount,
+      amount: totalAmount,
+      subscriptionMonths,
       transactionId,
       createdAtIso: new Date().toISOString(),
     });

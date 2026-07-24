@@ -30,6 +30,9 @@ type DashboardPayment = {
   status: string;
   rejectionReason: string | null;
   createdAt: Date;
+  amount: number;
+  subscriptionMonths: number;
+  monthlyPrice: number;
 };
 
 function hasPaymentDelegate(client: typeof prisma): client is typeof prisma & {
@@ -92,6 +95,9 @@ export default async function DashboardPage() {
           status: true,
           rejectionReason: true,
           createdAt: true,
+          amount: true,
+          subscriptionMonths: true,
+          monthlyPrice: true,
         },
         orderBy: { createdAt: 'desc' },
         take: 5,
@@ -102,7 +108,10 @@ export default async function DashboardPage() {
             "productId",
             "status",
             "rejectionReason",
-            "createdAt"
+            "createdAt",
+            "amount",
+            "subscriptionMonths",
+            "monthlyPrice"
           FROM "Payment"
           WHERE "userId" = ${userId}
           ORDER BY "createdAt" DESC
@@ -207,6 +216,9 @@ export default async function DashboardPage() {
                       </p>
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                         Submitted {new Date(payment.createdAt).toLocaleDateString()}
+                      </p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginTop: '0.15rem' }}>
+                        Duration: {payment.subscriptionMonths || 1} Month{(payment.subscriptionMonths || 1) > 1 ? 's' : ''} • Total: GH₵{((payment.amount || 0) / 100).toFixed(2)}
                       </p>
                       {['Verification Required', 'rejected'].includes(payment.status) && payment.rejectionReason && (
                         <p style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '0.25rem', fontWeight: 600 }}>

@@ -16,6 +16,7 @@ type PaymentRow = {
   userId: string;
   productId: string;
   status: string;
+  subscriptionMonths: number;
 };
 
 function hasPaymentDelegate(client: typeof prisma): client is typeof prisma & {
@@ -113,8 +114,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Invalid order product' }, { status: 400 });
       }
 
+      const months = payment.subscriptionMonths || 1;
       const startDate = new Date();
-      const expiryDate = addDays(startDate, 30);
+      const expiryDate = addDays(startDate, 30 * months);
       const accessDetailsStr = String(accessDetails).trim();
 
       // Transactionally:

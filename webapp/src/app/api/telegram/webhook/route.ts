@@ -23,6 +23,7 @@ type PaymentRow = {
   userId: string;
   productId: string;
   status: string;
+  subscriptionMonths: number;
 };
 
 function hasPaymentDelegate(client: typeof prisma): client is typeof prisma & {
@@ -66,8 +67,9 @@ async function deliverOrderFromTelegram(paymentId: string, accessDetails: string
     return { success: false, error: 'Invalid product registered for this payment.' };
   }
 
+  const months = payment.subscriptionMonths || 1;
   const startDate = new Date();
-  const expiryDate = addDays(startDate, 30);
+  const expiryDate = addDays(startDate, 30 * months);
   const accessDetailsStr = accessDetails.trim();
 
   await prisma.$transaction([

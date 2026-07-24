@@ -17,6 +17,8 @@ type PaymentItem = {
     email: string;
     name: string;
   };
+  subscriptionMonths?: number;
+  monthlyPrice?: number;
 };
 
 export default function AdminPaymentsClient({ initialPayments }: { initialPayments: PaymentItem[] }) {
@@ -90,7 +92,12 @@ export default function AdminPaymentsClient({ initialPayments }: { initialPaymen
           <div>
             <p style={{ fontWeight: 700, wordBreak: 'break-word' }}>{payment.user.name} ({payment.user.email})</p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Product: {payment.productId}</p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Amount: GH₵{(payment.amount / 100).toFixed(2)}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              Duration: {payment.subscriptionMonths || 1} Month{(payment.subscriptionMonths || 1) > 1 ? 's' : ''}
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              Amount: GH₵{(payment.amount / 100).toFixed(2)} {payment.monthlyPrice ? `(GH₵ ${(payment.monthlyPrice / 100).toFixed(2)}/mo)` : ''}
+            </p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Transaction ID: {payment.transactionId || 'N/A'}</p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
               Status: <strong>{displayStatus === 'pending' ? 'PENDING REVIEW' : displayStatus.toUpperCase()}</strong>

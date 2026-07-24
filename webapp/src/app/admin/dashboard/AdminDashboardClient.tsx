@@ -23,6 +23,8 @@ type PaymentRow = {
     email: string;
     name: string;
   };
+  subscriptionMonths?: number;
+  monthlyPrice?: number;
 };
 
 export default function AdminDashboardClient({ initialPayments }: { initialPayments: PaymentRow[] }) {
@@ -447,10 +449,18 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <span>{productName}</span>
                           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Plan: {planName}</span>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 600 }}>
+                            Duration: {payment.subscriptionMonths || 1} Month{(payment.subscriptionMonths || 1) > 1 ? 's' : ''}
+                          </span>
                         </div>
                       </td>
-                      <td style={{ padding: '1rem 0.75rem', fontWeight: 600 }}>
-                        GH₵{(payment.amount / 100).toFixed(2)}
+                      <td style={{ padding: '1rem 0.75rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontWeight: 600 }}>GH₵{(payment.amount / 100).toFixed(2)}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            (GH₵{((payment.monthlyPrice || payment.amount) / 100).toFixed(2)}/mo)
+                          </span>
+                        </div>
                       </td>
                       <td style={{ padding: '1rem 0.75rem' }}>
                         <span style={{ 

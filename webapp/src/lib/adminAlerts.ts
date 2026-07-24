@@ -11,6 +11,7 @@ export type NewOrderAlertPayload = {
   amount: number;
   transactionId?: string | null;
   createdAtIso: string;
+  subscriptionMonths?: number;
 };
 
 type AlertChannelResult = {
@@ -45,6 +46,7 @@ function buildOrderAlertText(payload: NewOrderAlertPayload) {
     'New order received',
     `Product: ${payload.productName} (${payload.plan})`,
     `Product ID: ${payload.productId}`,
+    `Duration: ${payload.subscriptionMonths || 1} Month(s)`,
     `Amount: ${amount}`,
     `Customer ID: ${payload.userId}`,
     `Customer Email: ${payload.userEmail || 'unknown'}`,
@@ -142,6 +144,7 @@ async function sendAdminTelegramAlert(payload: NewOrderAlertPayload): Promise<Al
   
   const text = `[ORDER] New Order Received!\n\n` +
                `Product: ${payload.productName} (${payload.plan})\n` +
+               `Duration: ${payload.subscriptionMonths || 1} Month(s)\n` +
                `Amount: ${amount}\n` +
                `Customer: ${payload.userEmail || payload.userId}`;
 

@@ -18,6 +18,8 @@ type AdminPaymentRow = {
   id: string;
   productId: string;
   amount: number;
+  subscriptionMonths: number;
+  monthlyPrice: number;
   paymentMethod: string;
   transactionId: string | null;
   proofImageUrl: string;
@@ -34,6 +36,8 @@ type AdminPaymentRawRow = {
   id: string;
   productId: string;
   amount: number;
+  subscriptionMonths: number;
+  monthlyPrice: number;
   paymentMethod: string;
   transactionId: string | null;
   proofImageUrl: string;
@@ -86,6 +90,8 @@ export default async function AdminPaymentsPage() {
           p."id",
           p."productId",
           p."amount",
+          p."subscriptionMonths",
+          p."monthlyPrice",
           p."paymentMethod",
           p."transactionId",
           p."proofImageUrl",
@@ -102,6 +108,8 @@ export default async function AdminPaymentsPage() {
           id: row.id,
           productId: row.productId,
           amount: row.amount,
+          subscriptionMonths: row.subscriptionMonths,
+          monthlyPrice: row.monthlyPrice,
           paymentMethod: row.paymentMethod,
           transactionId: row.transactionId,
           proofImageUrl: row.proofImageUrl,
