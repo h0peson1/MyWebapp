@@ -183,6 +183,7 @@ export default function PricingClient() {
               void trackEvent('pricing_select_plan', { productName: plan.product, plan: plan.plan });
             }}
             className={plan.featured ? 'btn btn-primary btn-full' : 'btn btn-secondary btn-full'}
+            style={{ marginTop: 'auto' }}
           >
             Subscribe
           </Link>
