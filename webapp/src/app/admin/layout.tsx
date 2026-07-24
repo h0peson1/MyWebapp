@@ -1,3 +1,5 @@
+import AdminAutoRefresh from '@/components/AdminAutoRefresh';
+
 export default function AdminLayout({
   children,
 }: {
@@ -5,6 +7,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="admin-layout min-h-screen bg-transparent">
+      <AdminAutoRefresh />
       {/* Admin specific header/sidebar can go here later */}
       <main>
         {children}
