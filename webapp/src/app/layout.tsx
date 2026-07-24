@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import "./globals.css";
 import { AuthProvider } from '@/components/AuthContext';
 import { ThemeProvider } from '@/components/ThemeContext';
@@ -7,16 +7,16 @@ import { Analytics } from "@vercel/analytics/react";
 import InteractiveBackground from '@/components/InteractiveBackground';
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://streamsaas.live' : 'http://localhost:3000');
 
-const displayFont = Space_Grotesk({
+const displayFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['500', '700'],
+  weight: ['500', '600', '700', '800'],
 });
 
-const bodyFont = Manrope({
+const bodyFont = Inter({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['400', '500', '700'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
