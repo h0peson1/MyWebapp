@@ -109,6 +109,43 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
 
   const countNeedsAction = countSubmitted + countVerificationRequired;
 
+  // Daily Sales Calculations for the last 7 days
+  const getLast7DaysSales = () => {
+    const salesMap: Record<string, number> = {};
+    const daysOrder: string[] = [];
+    
+    // Initialize map for the last 7 days with 0 sales
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toLocaleDateString('en-US', { weekday: 'short' });
+      salesMap[key] = 0;
+      daysOrder.push(key);
+    }
+    
+    // Sum delivered payments
+    initialPayments
+      .filter(p => p.status === 'Delivered')
+      .forEach(p => {
+        const pDate = new Date(p.createdAt);
+        const key = pDate.toLocaleDateString('en-US', { weekday: 'short' });
+        if (salesMap[key] !== undefined) {
+          salesMap[key] += p.amount / 100;
+        }
+      });
+
+    return daysOrder.map(day => ({
+      day,
+      amount: salesMap[day],
+    }));
+  };
+
+  const salesData = getLast7DaysSales();
+  const salesAmounts = salesData.map(d => d.amount);
+  const maxSales = Math.max(...salesAmounts, 0);
+  const minSales = salesAmounts.length > 0 ? Math.min(...salesAmounts) : 0;
+  const totalSalesWeek = salesAmounts.reduce((sum, a) => sum + a, 0);
+
   const filteredPayments = initialPayments.filter(p => {
     if (filter === 'submitted') return p.status === 'Payment Submitted';
     if (filter === 'verified') return p.status === 'Payment Verified';
@@ -670,6 +707,120 @@ export default function AdminDashboardClient({ initialPayments }: { initialPayme
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Sales Trend Bar Chart */}
+      <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ color: 'var(--accent)' }}><GoogleIcon name="bar_chart" size={20} /></span> 7-Day Sales Analytics
+            </h2>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>Daily revenue distribution for completed orders</p>
+          </div>
+          <div style={{ background: 'var(--accent-soft)', color: 'var(--accent)', padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.82rem', fontWeight: 700 }}>
+            Weekly Volume: GH₵{totalSalesWeek.toFixed(2)}
+          </div>
+        </div>
+
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'flex-end', 
+          justifyContent: 'space-between', 
+          height: '180px', 
+          padding: '1rem 0.5rem 0.5rem 0.5rem', 
+          borderBottom: '1px solid var(--border)',
+          gap: '0.75rem',
+          position: 'relative'
+        }}>
+          {maxSales === 0 && (
+            <div style={{ 
+              position: 'absolute', 
+              inset: 0, 
+              display: 'grid', 
+              placeItems: 'center', 
+              color: 'var(--text-muted)', 
+              fontSize: '0.88rem' 
+            }}>
+              No delivered sales data recorded in the last 7 days.
+            </div>
+          )}
+          {salesData.map(({ day, amount }) => {
+            const heightPct = maxSales > 0 ? (amount / maxSales) * 100 : 0;
+            const isPeak = maxSales > 0 && amount === maxSales;
+            const isLowest = maxSales > 0 && amount === minSales;
+
+            return (
+              <div key={day} style={{ 
+                flex: 1, 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                gap: '0.5rem',
+                height: '100%',
+                justifyContent: 'flex-end',
+                position: 'relative'
+              }}>
+                {/* Bar Value Tooltip */}
+                {amount > 0 && (
+                  <div style={{ 
+                    fontSize: '0.72rem', 
+                    fontWeight: 700, 
+                    color: isPeak ? 'var(--verified-green)' : 'var(--text-main)', 
+                    marginBottom: '2px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    GH₵{amount.toFixed(0)}
+                  </div>
+                )}
+
+                {/* The Bar */}
+                <div style={{ 
+                  width: '100%', 
+                  maxWidth: '36px',
+                  height: `${Math.max(heightPct, 4)}%`,
+                  background: isPeak 
+                    ? 'linear-gradient(to top, var(--verified-green), #34d399)' 
+                    : isLowest && amount === 0
+                    ? 'rgba(var(--text-main-rgb), 0.05)'
+                    : 'linear-gradient(to top, var(--accent), #a5b4fc)',
+                  borderRadius: '6px 6px 0 0',
+                  boxShadow: isPeak ? '0 4px 16px rgba(16, 185, 129, 0.25)' : 'none',
+                  transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}
+                title={`${day}: GH₵${amount.toFixed(2)}`}
+                />
+
+                {/* Day Label */}
+                <div style={{ 
+                  fontSize: '0.8rem', 
+                  fontWeight: isPeak || isLowest ? 700 : 500, 
+                  color: isPeak ? 'var(--verified-green)' : isLowest ? '#ef4444' : 'var(--text-muted)' 
+                }}>
+                  {day} {isPeak && '🏆'} {isLowest && amount === 0 && '⚠️'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Legend / Helper Info */}
+        <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.78rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--verified-green)', display: 'inline-block' }} />
+            <span>Highest Sales Day (Peak)</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+            <span>Standard Activity</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'rgba(var(--text-main-rgb), 0.1)', display: 'inline-block', border: '1px dashed var(--border)' }} />
+            <span>Lowest/No Activity</span>
+          </div>
         </div>
       </div>
 
