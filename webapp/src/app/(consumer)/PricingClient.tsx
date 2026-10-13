@@ -37,7 +37,7 @@ const streamingPlans: Plan[] = [
   {
     product: 'Apple Music',
     plan: 'Standard',
-    price: '₵30',
+    price: '₵25',
     tagline: 'Lossless audio with millions of songs ad-free.',
     perks: ['Lossless quality', 'Curated playlists', 'Cross-device sync'],
   },

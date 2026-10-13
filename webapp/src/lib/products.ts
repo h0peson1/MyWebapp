@@ -2,7 +2,7 @@ export const PRODUCT_REGISTRY = {
   "Netflix": { plan: "Premium", amount: 4000 }, // Stored centrally in cents/kobo
   "Amazon Prime Video": { plan: "Standard", amount: 7000 },
   "Snapchat+": { plan: "Premium", amount: 3500 },
-  "Apple Music": { plan: "Standard", amount: 3000 },
+  "Apple Music": { plan: "Standard", amount: 2500 },
   "DStv Premium": { plan: "Premium", amount: 15000 },
   "Apple TV+": { plan: "Standard", amount: 6000 },
   "iCloud": {

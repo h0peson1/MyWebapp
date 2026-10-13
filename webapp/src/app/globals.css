@@ -57,7 +57,7 @@ body {
     radial-gradient(at 0% 100%, var(--bg-glow-alt) 0, transparent 45%);
   background-attachment: fixed;
   color: var(--text-main);
-  font-family: var(--font-body), 'Segoe UI', sans-serif;
+  font-family: var(--font-mono), 'Courier New', monospace;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -84,7 +84,7 @@ h5,
 h6,
 .nav-brand,
 .auth-title {
-  font-family: var(--font-display), 'Segoe UI', sans-serif;
+  font-family: var(--font-mono), 'Courier New', monospace;
   letter-spacing: -0.02em;
 }
 
