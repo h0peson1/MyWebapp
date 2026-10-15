@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthContext';
 import GoogleIcon from '@/components/icons/GoogleIcon';
+import { getServiceIcon } from '@/components/icons/BrandIcons';
 import FadeUp from '@/components/motion/FadeUp';
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerGroup';
 import { trackEvent } from '@/lib/analytics';
@@ -24,7 +25,7 @@ const streamingPlans: Plan[] = [
     plan: 'Premium',
     price: '₵40',
     tagline: 'Unlimited movies and TV shows in 4K quality.',
-    perks: ['4K streaming', '4 simultaneous devices', 'Offline downloads'],
+    perks: ['4K Ultra HD streaming', '4 simultaneous devices', 'Offline downloads'],
     featured: true,
   },
   {
@@ -32,35 +33,35 @@ const streamingPlans: Plan[] = [
     plan: 'Standard',
     price: '₵70',
     tagline: 'Amazon Originals and a deep catalog of shows and films.',
-    perks: ['Original series', 'Fast availability', 'Multi-device access'],
+    perks: ['Amazon Originals access', 'Fast availability', 'Multi-device access'],
   },
   {
     product: 'Apple Music',
     plan: 'Standard',
     price: '₵25',
     tagline: 'Lossless audio with millions of songs ad-free.',
-    perks: ['Lossless quality', 'Curated playlists', 'Cross-device sync'],
+    perks: ['Lossless & Spatial Audio', 'Curated playlists', 'Cross-device sync'],
   },
   {
     product: 'Apple TV+',
     plan: 'Standard',
     price: '₵60',
     tagline: 'Award-winning original series and films.',
-    perks: ['Original content', 'Family sharing ready', 'HD streaming'],
+    perks: ['Apple Original content', 'Family sharing ready', '4K HDR streaming'],
   },
   {
     product: 'DStv Premium',
     plan: 'Premium',
     price: '₵150',
     tagline: 'Live channels and premium television packages.',
-    perks: ['Premium channels', 'Live sports', 'Multi-screen access'],
+    perks: ['Premium TV channels', 'Live sports & events', 'Multi-screen access'],
   },
   {
     product: 'Snapchat+',
     plan: 'Premium',
     price: '₵35',
     tagline: 'Experimental and exclusive Snapchat features.',
-    perks: ['Early features', 'Badge access', 'Priority experiments'],
+    perks: ['Early experimental features', 'Exclusive badge access', 'Priority story boost'],
   },
 ];
 
@@ -69,23 +70,23 @@ const icloudPlans: Plan[] = [
     product: 'iCloud',
     plan: '50GB',
     price: '₵40',
-    tagline: 'Best for essentials and quick backups.',
-    perks: ['Photo backups', 'Simple storage expansion', 'Device sync'],
+    tagline: 'Best for essentials, photo storage and quick backups.',
+    perks: ['Photo & video backups', 'Simple storage expansion', 'Seamless device sync'],
   },
   {
     product: 'iCloud',
     plan: '200GB',
     price: '₵80',
-    tagline: 'Balanced plan for families and creators.',
-    perks: ['Family sharing', 'Auto backups', 'End-to-end encryption'],
+    tagline: 'Balanced plan for families, creators and heavy phone usage.',
+    perks: ['Family sharing up to 5', 'Auto iCloud backups', 'Private Relay & encryption'],
     featured: true,
   },
   {
     product: 'iCloud',
     plan: '1TB',
     price: '₵150',
-    tagline: 'Maximum room for heavy media workflows.',
-    perks: ['Huge library support', 'Shared folders', 'Cross-device restore'],
+    tagline: 'Maximum room for heavy media workflows and creator libraries.',
+    perks: ['Huge photo/video library', 'Shared team folders', 'Full device restore backup'],
   },
 ];
 
@@ -110,65 +111,95 @@ export default function PricingClient() {
 
     return (
       <StaggerItem key={id}>
-        <article
-          className="card"
-          style={{
-            borderColor: plan.featured ? 'var(--border-strong)' : 'var(--border)',
-            boxShadow: plan.featured ? '0 18px 38px rgba(220, 106, 31, 0.18)' : undefined,
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.8rem' }}>
-            <div>
-              <h3 className="card-title">{plan.product} {plan.product === 'iCloud' ? plan.plan : plan.plan}</h3>
-              <p className="card-desc" style={{ marginBottom: '0.8rem' }}>{plan.tagline}</p>
+        <article className={`card ${plan.featured ? 'pricing-card-featured' : ''}`}>
+          {/* Card Top: Logo + Title + Featured Badge */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div 
+                style={{ 
+                  width: '44px', 
+                  height: '44px', 
+                  borderRadius: '12px', 
+                  background: 'var(--bg-elevated)', 
+                  border: '1px solid var(--border)', 
+                  display: 'grid', 
+                  placeItems: 'center', 
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(11, 37, 44, 0.05)'
+                }}
+              >
+                {getServiceIcon(plan.product, 28)}
+              </div>
+              <div>
+                <h3 className="card-title" style={{ fontSize: '1.2rem', marginBottom: '0.15rem' }}>
+                  {plan.product}
+                </h3>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  {plan.plan} Plan
+                </span>
+              </div>
             </div>
             {plan.featured && (
-              <span className="section-kicker" style={{ padding: '0.25rem 0.55rem', fontSize: '0.68rem' }}>Featured</span>
+              <span className="badge-featured">
+                <GoogleIcon name="star" size={13} /> Featured
+              </span>
             )}
           </div>
 
-          <p className="card-price" style={{ marginBottom: '0.2rem' }}>{monthlyPriceFormatted}<span>/month</span></p>
-          
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.6rem' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Duration:</span>
-            <select
-              className="form-input"
-              value={months}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                setPlanMonths((prev) => ({ ...prev, [id]: val }));
-              }}
-              style={{
-                margin: 0,
-                padding: '0.35rem 0.65rem',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                width: 'auto',
-                borderRadius: '8px',
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-main)',
-              }}
-            >
-              {[1, 3, 6, 12].map((opt) => (
-                <option key={opt} value={opt} style={{ backgroundColor: 'var(--bg-elevated)', color: 'var(--text-main)' }}>
-                  {opt} Month{opt > 1 ? 's' : ''}
-                </option>
-              ))}
-            </select>
+          <p className="card-desc" style={{ fontSize: '0.88rem', margin: '0.3rem 0 0.6rem', minHeight: '2.5rem' }}>
+            {plan.tagline}
+          </p>
+
+          {/* Pricing Section with Enhanced Visual Hierarchy */}
+          <div style={{ padding: '0.75rem 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+              <span style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                {monthlyPriceFormatted}
+              </span>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                / month
+              </span>
+            </div>
+            {months > 1 && (
+              <p style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 700, marginTop: '0.35rem' }}>
+                Total for {months} Months: {totalPriceFormatted}
+              </p>
+            )}
           </div>
 
-          {months > 1 && (
-            <p style={{ fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 700, marginTop: '-0.3rem', marginBottom: '0.6rem' }}>
-              Total for {months} Months: {totalPriceFormatted}
-            </p>
-          )}
+          {/* Interactive Duration Selector */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Select Duration
+              </span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--accent)', fontWeight: 700 }}>
+                {months} Month{months > 1 ? 's' : ''}
+              </span>
+            </div>
+            <div className="duration-selector" role="group" aria-label="Subscription duration">
+              {[1, 3, 6, 12].map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  className={`duration-pill ${months === opt ? 'active' : ''}`}
+                  onClick={() => setPlanMonths((prev) => ({ ...prev, [id]: opt }))}
+                  aria-pressed={months === opt}
+                >
+                  {opt}M
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <ul className="feature-list" style={{ marginBottom: '0.4rem' }}>
+          {/* Scannable Feature List */}
+          <ul className="feature-list" style={{ marginTop: '0.2rem', marginBottom: '0.6rem', flexGrow: 1 }}>
             {plan.perks.map((perk) => (
-              <li key={perk}>
-                <GoogleIcon name="check_circle" size={14} style={{ color: '#16a34a' }} /> {perk}
+              <li key={perk} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.86rem', color: 'var(--text-main)', marginBottom: '0.4rem' }}>
+                <span style={{ color: 'var(--primary)', display: 'flex', flexShrink: 0 }}>
+                  <GoogleIcon name="check_circle" size={15} />
+                </span>
+                <span>{perk}</span>
               </li>
             ))}
           </ul>
@@ -177,15 +208,13 @@ export default function PricingClient() {
             href={href}
             aria-disabled={loading}
             onClick={() => {
-              if (loading) {
-                return;
-              }
+              if (loading) return;
               void trackEvent('pricing_select_plan', { productName: plan.product, plan: plan.plan });
             }}
-            className={plan.featured ? 'btn btn-primary btn-full' : 'btn btn-secondary btn-full'}
-            style={{ marginTop: 'auto' }}
+            className={plan.featured ? 'btn btn-accent btn-full' : 'btn btn-primary btn-full'}
+            style={{ marginTop: 'auto', padding: '0.8rem', fontSize: '0.92rem' }}
           >
-            Subscribe
+            Subscribe Now
           </Link>
         </article>
       </StaggerItem>

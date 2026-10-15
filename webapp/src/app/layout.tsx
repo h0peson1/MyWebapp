@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import "./globals.css";
 import { AuthProvider } from '@/components/AuthContext';
 import { ThemeProvider } from '@/components/ThemeContext';
@@ -8,10 +8,16 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import InteractiveBackground from '@/components/InteractiveBackground';
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://streamsaas.live' : 'http://localhost:3000');
 
+const sansFont = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
 const monoFont = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
-  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -51,7 +57,7 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" />
       </head>
-      <body suppressHydrationWarning className={monoFont.variable}>
+      <body suppressHydrationWarning className={`${sansFont.variable} ${monoFont.variable}`}>
         <ThemeProvider>
           <InteractiveBackground />
           <AuthProvider>

@@ -94,7 +94,7 @@ export default function PaymentCheckoutClient({ productId, resolvedProduct, init
           padding: '0.9rem 1.1rem', 
           background: 'var(--accent-soft)', 
           borderRadius: '12px',
-          border: '1px solid rgba(99, 102, 241, 0.15)',
+          border: '1px solid var(--border-strong)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -107,12 +107,33 @@ export default function PaymentCheckoutClient({ productId, resolvedProduct, init
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>Total Due</p>
-            <p style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent)', margin: 0 }}>
+            <p style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--accent)', margin: 0 }}>
               {MOMO_PAYMENT_CONFIG.currency} {totalAmountLabel}
             </p>
           </div>
         </div>
       </section>
+
+      {/* Security Reassurance Banner */}
+      <div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.75rem', 
+          padding: '1rem 1.25rem', 
+          borderRadius: '14px', 
+          background: 'var(--bg-elevated)', 
+          border: '1px solid var(--border)',
+          boxShadow: '0 2px 10px rgba(11, 37, 44, 0.04)'
+        }}
+      >
+        <div style={{ color: 'var(--primary)', display: 'flex', flexShrink: 0 }}>
+          <GoogleIcon name="shield" size={22} />
+        </div>
+        <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
+          <strong style={{ color: 'var(--accent)' }}>Security Notice:</strong> We never store your Mobile Money PIN or password. Payments are verified manually for security.
+        </p>
+      </div>
 
       {/* Payment Instructions Card */}
       <section className="card" style={{ gap: '0.8rem' }}>
@@ -131,9 +152,9 @@ export default function PaymentCheckoutClient({ productId, resolvedProduct, init
             <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Account Name</p>
             <p style={{ fontSize: '1.05rem', fontWeight: 700 }}>{MOMO_PAYMENT_CONFIG.accountName}</p>
           </div>
-          <div className="stat-chip" style={{ borderColor: 'rgba(220, 106, 31, 0.35)' }}>
+          <div className="stat-chip" style={{ borderColor: 'var(--border-strong)', background: 'var(--accent-soft)' }}>
             <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Amount to Pay</p>
-            <p style={{ fontSize: '1.08rem', fontWeight: 800 }}>{MOMO_PAYMENT_CONFIG.currency} {totalAmountLabel}</p>
+            <p style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--accent)' }}>{MOMO_PAYMENT_CONFIG.currency} {totalAmountLabel}</p>
           </div>
         </div>
       </section>

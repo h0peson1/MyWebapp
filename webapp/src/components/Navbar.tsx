@@ -45,8 +45,9 @@ export default function Navbar() {
     <>
       <nav className="navbar">
         <div className="container">
-          <Link href="/" className="nav-brand">
-            <span className="text-accent"><GoogleIcon name="auto_awesome" size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} /></span> StreamSaaS
+          <Link href="/" className="nav-brand" aria-label="StreamSaaS">
+            <span className="brand-stream">Stream</span>
+            <span className="brand-saas">SaaS</span>
           </Link>
           
           <div className="nav-links">

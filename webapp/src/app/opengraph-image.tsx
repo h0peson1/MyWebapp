@@ -18,8 +18,8 @@ export default function OpenGraphImage() {
           width: '100%',
           height: '100%',
           padding: '64px',
-          background: 'linear-gradient(135deg, #161413 0%, #2b2521 56%, #dc6a1f 100%)',
-          color: '#fffaf4',
+          background: 'linear-gradient(135deg, #0A1B20 0%, #178CA4 65%, #18B7BE 100%)',
+          color: '#F9F7F0',
           fontFamily: 'Inter, Arial, sans-serif',
         }}
       >

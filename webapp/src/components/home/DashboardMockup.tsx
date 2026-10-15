@@ -2,202 +2,298 @@
 
 import { motion } from 'framer-motion';
 import GoogleIcon from '../icons/GoogleIcon';
+import { NetflixIcon, AppleMusicIcon } from '../icons/BrandIcons';
 
 export function DashboardMockup() {
   return (
-    <div className="dashboard-mockup-container">
+    <div className="dashboard-mockup-wrapper">
       <motion.div 
-        className="mockup-card"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mockup-window"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.15 }}
       >
-        <div className="mockup-header">
-          <div className="mockup-user">
-            <div className="mockup-avatar">
-              <GoogleIcon name="person" size={14} />
-            </div>
-            <span>j***@gmail.com</span>
+        {/* Window Chrome Header */}
+        <div className="mockup-chrome">
+          <div className="traffic-dots">
+            <span className="dot red" />
+            <span className="dot yellow" />
+            <span className="dot green" />
           </div>
-          <div className="mockup-badge active">
-            <div className="pulse-dot" />
-            Active
+          <div className="mockup-window-title">
+            <GoogleIcon name="lock" size={12} /> app.streamsaas.live/dashboard
           </div>
-        </div>
-
-        <div className="mockup-content">
-          <div className="mockup-stat">
-            <GoogleIcon name="calendar_today" size={14} className="text-muted" />
-            <div className="stat-info">
-              <span className="stat-label">Expires in</span>
-              <span className="stat-value">32 Days</span>
-            </div>
-          </div>
-          <div className="mockup-stat">
-            <GoogleIcon name="check_circle" size={14} className="text-muted" />
-            <div className="stat-info">
-              <span className="stat-label">Status</span>
-              <span className="stat-value">Premium Verified</span>
-            </div>
+          <div className="mockup-user-pill">
+            <span className="status-live-dot" />
+            <span>Kwame A.</span>
           </div>
         </div>
 
-        <div className="mockup-footer">
-          <div className="mockup-progress-bg">
-            <motion.div 
-              className="mockup-progress-fill"
-              initial={{ width: 0 }}
-              animate={{ width: '70%' }}
-              transition={{ duration: 1.5, delay: 0.8 }}
-            />
+        {/* Dashboard Body Preview */}
+        <div className="mockup-body">
+          <div className="mockup-top-row">
+            <div>
+              <p className="greeting-label">Welcome back,</p>
+              <h4 className="greeting-name">Active Subscriptions</h4>
+            </div>
+            <div className="mockup-sync-badge">
+              <GoogleIcon name="verified_user" size={13} />
+              <span>Verified Account</span>
+            </div>
+          </div>
+
+          {/* Subscription Item 1 */}
+          <div className="mockup-sub-item">
+            <div className="sub-logo-box">
+              <NetflixIcon size={24} />
+            </div>
+            <div className="sub-info">
+              <div className="sub-title-row">
+                <span className="sub-name">Netflix Premium (4K)</span>
+                <span className="sub-badge active">Active</span>
+              </div>
+              <p className="sub-meta">Expires in 28 days • 4 Screens</p>
+              <div className="sub-progress-bar">
+                <div className="sub-progress-fill" style={{ width: '74%' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Subscription Item 2 */}
+          <div className="mockup-sub-item">
+            <div className="sub-logo-box">
+              <AppleMusicIcon size={24} />
+            </div>
+            <div className="sub-info">
+              <div className="sub-title-row">
+                <span className="sub-name">Apple Music</span>
+                <span className="sub-badge active">Active</span>
+              </div>
+              <p className="sub-meta">Expires in 16 days • Lossless Audio</p>
+              <div className="sub-progress-bar">
+                <div className="sub-progress-fill accent-fill" style={{ width: '52%' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Security Banner */}
+          <div className="mockup-sec-note">
+            <GoogleIcon name="shield" size={14} style={{ color: 'var(--accent)' }} />
+            <span>Private delivery credentials managed securely</span>
           </div>
         </div>
-
-        {/* Blurred decorative element */}
-        <div className="mockup-glow" />
       </motion.div>
 
       <style jsx>{`
-        .dashboard-mockup-container {
-          position: relative;
+        .dashboard-mockup-wrapper {
           width: 100%;
-          max-width: 320px;
-          perspective: 1000px;
+          max-width: 440px;
+          margin: 0 auto;
         }
 
-        .mockup-card {
-          background: var(--glass-bg);
+        .mockup-window {
+          background: var(--bg-card);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid var(--glass-border);
-          border-radius: 20px;
-          padding: 1.25rem;
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-          transform: rotateY(-5deg) rotateX(5deg);
-          position: relative;
-          z-index: 2;
+          border: 1px solid var(--border);
+          border-radius: 18px;
+          box-shadow: 0 20px 45px rgba(11, 37, 44, 0.12), 0 0 0 1px rgba(24, 183, 190, 0.25);
           overflow: hidden;
+          transition: transform 0.3s ease;
         }
 
-        .mockup-header {
+        .mockup-window:hover {
+          transform: translateY(-4px);
+        }
+
+        .mockup-chrome {
           display: flex;
+          align-items: center;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.5rem;
+          padding: 0.65rem 0.9rem;
+          background: var(--bg-elevated);
+          border-bottom: 1px solid var(--border);
         }
 
-        .mockup-user {
+        .traffic-dots {
+          display: flex;
+          gap: 5px;
+        }
+
+        .dot {
+          width: 9px;
+          height: 9px;
+          border-radius: 50%;
+        }
+
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #f59e0b; }
+        .dot.green { background: #10b981; }
+
+        .mockup-window-title {
+          font-size: 0.72rem;
+          color: var(--text-muted);
+          font-weight: 600;
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 0.75rem;
-          font-weight: 600;
+          gap: 4px;
+        }
+
+        .mockup-user-pill {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 0.7rem;
+          font-weight: 700;
           color: var(--text-main);
         }
 
-        .mockup-avatar {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background: var(--accent-soft);
-          color: var(--accent);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .mockup-badge {
-          display: flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.25rem 0.6rem;
-          border-radius: 99px;
-          font-size: 0.65rem;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-
-        .mockup-badge.active {
-          background: rgba(34, 197, 94, 0.15);
-          color: #22c55e;
-        }
-
-        .pulse-dot {
+        .status-live-dot {
           width: 6px;
           height: 6px;
-          background: #22c55e;
           border-radius: 50%;
-          animation: pulse 1.5s infinite;
+          background: #10b981;
+          box-shadow: 0 0 6px #10b981;
         }
 
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.5); opacity: 0.5; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-
-        .mockup-content {
+        .mockup-body {
+          padding: 1.15rem;
           display: flex;
           flex-direction: column;
-          gap: 0.8rem;
-          margin-bottom: 1.2rem;
+          gap: 0.85rem;
         }
 
-        .mockup-stat {
+        .mockup-top-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .greeting-label {
+          font-size: 0.72rem;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 0.1rem;
+        }
+
+        .greeting-name {
+          font-size: 0.98rem;
+          font-weight: 800;
+          color: var(--text-main);
+          margin: 0;
+        }
+
+        .mockup-sync-badge {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: #178CA4;
+          background: rgba(23, 140, 164, 0.12);
+          padding: 0.25rem 0.55rem;
+          border-radius: 999px;
+          border: 1px solid rgba(23, 140, 164, 0.25);
+        }
+
+        [data-theme='dark'] .mockup-sync-badge {
+          color: #18B7BE;
+          background: rgba(24, 183, 190, 0.15);
+          border-color: rgba(24, 183, 190, 0.3);
+        }
+
+        .mockup-sub-item {
           display: flex;
           align-items: center;
           gap: 0.75rem;
+          background: var(--bg-elevated);
+          padding: 0.75rem;
+          border-radius: 12px;
+          border: 1px solid var(--border);
         }
 
-        .stat-info {
+        .sub-logo-box {
+          width: 38px;
+          height: 38px;
+          border-radius: 9px;
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          display: grid;
+          place-items: center;
+          flex-shrink: 0;
+        }
+
+        .sub-info {
+          flex: 1;
           display: flex;
           flex-direction: column;
+          gap: 0.2rem;
         }
 
-        .stat-label {
-          font-size: 0.65rem;
-          color: var(--text-muted);
-          font-weight: 500;
+        .sub-title-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
 
-        .stat-value {
-          font-size: 0.8rem;
+        .sub-name {
+          font-size: 0.84rem;
           font-weight: 700;
           color: var(--text-main);
         }
 
-        .mockup-footer {
-          margin-top: auto;
+        .sub-badge {
+          font-size: 0.65rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          padding: 0.15rem 0.45rem;
+          border-radius: 6px;
         }
 
-        .mockup-progress-bg {
-          width: 100%;
-          height: 6px;
-          background: var(--border);
-          border-radius: 99px;
-          overflow: hidden;
+        .sub-badge.active {
+          background: rgba(23, 140, 164, 0.14);
+          color: #178CA4;
         }
 
-        .mockup-progress-fill {
-          height: 100%;
-          background: linear-gradient(to right, var(--accent), #f28e2d);
-          border-radius: 99px;
+        [data-theme='dark'] .sub-badge.active {
+          background: rgba(24, 183, 190, 0.2);
+          color: #18B7BE;
         }
 
-        .mockup-glow {
-          position: absolute;
-          top: -20%;
-          right: -20%;
-          width: 100px;
-          height: 100px;
-          background: var(--accent);
-          filter: blur(50px);
-          opacity: 0.15;
-          z-index: -1;
-        }
-
-        .text-muted {
+        .sub-meta {
+          font-size: 0.72rem;
           color: var(--text-muted);
+          margin: 0;
+        }
+
+        .sub-progress-bar {
+          width: 100%;
+          height: 4px;
+          background: var(--border);
+          border-radius: 999px;
+          overflow: hidden;
+          margin-top: 0.2rem;
+        }
+
+        .sub-progress-fill {
+          height: 100%;
+          background: #178CA4;
+          border-radius: 999px;
+        }
+
+        .sub-progress-fill.accent-fill {
+          background: #18B7BE;
+        }
+
+        .mockup-sec-note {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-size: 0.73rem;
+          color: var(--text-muted);
+          padding-top: 0.35rem;
+          border-top: 1px dashed var(--border);
         }
       `}</style>
     </div>

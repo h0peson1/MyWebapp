@@ -47,8 +47,8 @@ class Particle {
   }
 
   draw() {
-    const particleColor = getComputedStyle(document.body).getPropertyValue('--particle-color') || 'rgba(16, 185, 129, 0.4)';
-    this.ctx.fillStyle = particleColor;
+    const rawColor = getComputedStyle(document.body).getPropertyValue('--particle-color').trim() || 'rgba(23, 140, 164, 0.35)';
+    this.ctx.fillStyle = rawColor;
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     this.ctx.fill();
@@ -82,7 +82,7 @@ export default function InteractiveBackground() {
 
     const init = () => {
       particles = [];
-      const numberOfParticles = (canvas.width * canvas.height) / 15000;
+      const numberOfParticles = Math.min((canvas.width * canvas.height) / 16000, 100);
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle(canvas, ctx, mouse));
       }
@@ -90,19 +90,23 @@ export default function InteractiveBackground() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
       for (let i = 0; i < particles.length; i++) {
         particles[i].update();
         particles[i].draw();
 
-        for (let j = i; j < particles.length; j++) {
+        for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 120) {
-            const particleColor = getComputedStyle(document.body).getPropertyValue('--particle-color') || 'rgba(16, 185, 129, 0.4)';
-            ctx.strokeStyle = particleColor.replace('0.4', (0.1 * (1 - distance / 120)).toString()).replace('0.2', (0.1 * (1 - distance / 120)).toString());
-            ctx.lineWidth = 0.5;
+          if (distance < 125) {
+            const lineOpacity = 0.22 * (1 - distance / 125);
+            ctx.strokeStyle = isDark 
+              ? `rgba(24, 183, 190, ${lineOpacity})` 
+              : `rgba(23, 140, 164, ${lineOpacity})`;
+            ctx.lineWidth = 0.65;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);

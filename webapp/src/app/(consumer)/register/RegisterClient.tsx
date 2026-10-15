@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { useAuth } from '@/components/AuthContext';
 
 export default function RegisterClient() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { checkAuth } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -17,8 +16,6 @@ export default function RegisterClient() {
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,8 +50,8 @@ export default function RegisterClient() {
 
       await checkAuth();
 
-      const requestedNext = searchParams.get('next');
-      const nextPath = requestedNext && requestedNext.startsWith('/') ? requestedNext : '/dashboard';
+      const nextParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') : null;
+      const nextPath = nextParam && nextParam.startsWith('/') ? nextParam : '/dashboard';
       setTimeout(() => router.push(nextPath), 1000);
     } catch (err: unknown) {
       setMessage(err instanceof Error ? err.message : 'Registration failed');

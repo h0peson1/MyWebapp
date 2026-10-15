@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
+      <stop offset="0%" stop-color="#18B7BE"/>
+      <stop offset="100%" stop-color="#F9F7F0"/>
     </linearGradient>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#09090b"/>
-      <stop offset="100%" stop-color="#18181b"/>
+      <stop offset="0%" stop-color="#0A1B20"/>
+      <stop offset="100%" stop-color="#178CA4"/>
     </linearGradient>
   </defs>
   <!-- Background rounded square -->
@@ -15,9 +15,9 @@
   <path d="M42 18 C42 18, 36 14, 28 18 C20 22, 18 24, 22 28 C26 32, 38 30, 42 34 C46 38, 42 44, 36 46 C30 48, 22 46, 22 46" 
         stroke="url(#g)" stroke-width="5" stroke-linecap="round" fill="none"/>
   <!-- Accent streaming dots -->
-  <circle cx="45" cy="17" r="2.5" fill="#818cf8" opacity="0.7"/>
-  <circle cx="19" cy="47" r="2.5" fill="#22d3ee" opacity="0.7"/>
+  <circle cx="45" cy="17" r="2.5" fill="#18B7BE" opacity="0.85"/>
+  <circle cx="19" cy="47" r="2.5" fill="#F9F7F0" opacity="0.85"/>
   <!-- Subtle signal waves on top-right -->
-  <path d="M48 22 C50 20, 52 20, 52 18" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
-  <path d="M48 25 C51 22, 55 21, 56 17" stroke="#818cf8" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.3"/>
+  <path d="M48 22 C50 20, 52 20, 52 18" stroke="#18B7BE" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M48 25 C51 22, 55 21, 56 17" stroke="#18B7BE" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.4"/>
 </svg>

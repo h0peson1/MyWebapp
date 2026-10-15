@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
 import RegisterClient from './RegisterClient';
 
 export const metadata: Metadata = {
@@ -12,18 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="auth-container">
-            <h1 className="auth-title">Create Account</h1>
-            <p style={{ color: 'var(--text-muted)' }}>Loading signup form...</p>
-          </div>
-        </div>
-      }
-    >
-      <RegisterClient />
-    </Suspense>
-  );
+  return <RegisterClient />;
 }

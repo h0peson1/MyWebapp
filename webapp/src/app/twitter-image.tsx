@@ -18,12 +18,12 @@ export default function TwitterImage() {
           width: '100%',
           height: '100%',
           padding: '72px',
-          background: 'linear-gradient(135deg, #fffdf7 0%, #f6e7d8 50%, #dc6a1f 100%)',
-          color: '#221812',
+          background: 'linear-gradient(135deg, #F9F7F0 0%, #FFFFFF 55%, #18B7BE 100%)',
+          color: '#0B252C',
           fontFamily: 'Inter, Arial, sans-serif',
         }}
       >
-        <div style={{ fontSize: 28, fontWeight: 700, color: '#dc6a1f', marginBottom: 18 }}>StreamSaaS</div>
+        <div style={{ fontSize: 28, fontWeight: 700, color: '#178CA4', marginBottom: 18 }}>StreamSaaS</div>
         <div style={{ fontSize: 64, fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1.05, maxWidth: 900 }}>
           Secure subscription delivery with clear payment proof and account control.
         </div>
